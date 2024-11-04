@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "proxy"
+version = "0.1.0"
+description = ""
+authors = ["sanderskofsrud <sandesko@stud.ntnu.no>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+mitmproxy = "^11.0.0"
+requests = "^2.32.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
