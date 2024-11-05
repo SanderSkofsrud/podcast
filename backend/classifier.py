@@ -1,19 +1,31 @@
 # classifier.py
-from transformers import pipeline
-import torch  # Add this import statement
+
 import logging
+from config.settings import get_openai_name, client
 
 logger = logging.getLogger(__name__)
 
-classifier = pipeline(
-    "zero-shot-classification",
-    model="valhalla/distilbart-mnli-12-1",
-    device=0 if torch.cuda.is_available() else -1,
-    batch_size=8  # Adjust based on your system's capabilities
-)
+
 
 def classify_texts(texts):
-    candidate_labels = ["advertisement", "content"]
-    results = classifier(texts, candidate_labels=candidate_labels)
-    labels = [result['labels'][0] for result in results]
+    labels = []
+    for text in texts:
+        messages = [
+            {"role": "system", "content": "You are an assistant that classifies text as 'advertisement' or 'content'."},
+            {"role": "user", "content": f"Classify the following text as 'advertisement' or 'content':\n\n\"{text}\""}
+        ]
+        try:
+            response = client.chat.completions.create(
+                model=get_openai_name(),
+                messages=messages,
+            )
+            classification = response['choices'][0]['message']['content'].strip().lower()
+            if classification not in ['advertisement', 'content']:
+                classification = 'content'  # Default to content if classification is unclear
+            labels.append(classification)
+        except Exception as e:
+            logger.error(f"Error classifying text: {e}")
+            labels.append('content')  # Default to content in case of error
     return labels
+
+

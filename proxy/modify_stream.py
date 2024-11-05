@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-BACKEND_SERVER_URL = 'http://localhost:5000/process_audio'
+BACKEND_SERVER_URL = 'http://localhost:5001/process_audio'
 
 def response(flow: http.HTTPFlow) -> None:
     # Check if the response is an audio stream
