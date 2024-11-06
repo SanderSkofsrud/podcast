@@ -16,25 +16,6 @@ def get_openai_version():
 def get_openai_name():
     return os.getenv("AZURE_OPENAI_NAME")
 
-def get_whisper_endpoint():
-    return os.getenv("WISPER_API_URL")
-
-def get_whisper_api_key():
-    return os.getenv("WISPER_API_KEY")
-
-def get_whisper_api_version():
-    return os.getenv("WISPER_API_VERSION")
-
-def get_whisper_api_type():
-    return os.getenv("WISPER_API_TYPE")
-
-def get_whisper_deployment_id():
-    return os.getenv("WISPER_DEPLOYMENT_ID")
-
-
-
-
-
 
 from openai import AzureOpenAI
 
@@ -46,23 +27,6 @@ client = AzureOpenAI(
     azure_deployment=get_openai_name()  
 )
 
-"""
-
-
-# Example request
-completion = client.chat.completions.create(
-    model=get_openai_name(),  
-    messages=[
-        {"role": "system", "content": "Du er en tekstklassifikator som avgjør om en tekst er en annonse eller ikke."},
-        {"role": "user", "content": "Skriv en kort annonse for et sommertilbud."}
-    ],
-    max_tokens=50
-)
-
-print(completion.choices[0].message.content)
-
-
-"""
 
 
 
