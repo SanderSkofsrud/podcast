@@ -22,6 +22,19 @@ def get_whisper_endpoint():
 def get_whisper_api_key():
     return os.getenv("WISPER_API_KEY")
 
+def get_whisper_api_version():
+    return os.getenv("WISPER_API_VERSION")
+
+def get_whisper_api_type():
+    return os.getenv("WISPER_API_TYPE")
+
+def get_whisper_deployment_id():
+    return os.getenv("WISPER_DEPLOYMENT_ID")
+
+
+
+
+
 
 from openai import AzureOpenAI
 

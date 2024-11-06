@@ -1,58 +1,61 @@
-# transcriber.py
-
-import requests
+from pydub import AudioSegment
+import openai
 import logging
-from config.settings import get_whisper_endpoint, get_whisper_api_key
+from config.settings import (
+    get_whisper_api_key,
+    get_whisper_api_version,
+    get_whisper_deployment_id,
+    get_whisper_endpoint,
+)
+import os
+from openai import AzureOpenAI
 
 logger = logging.getLogger(__name__)
 
-# Get Whisper endpoint and API key from configuration
-WHISPER_ENDPOINT = get_whisper_endpoint()
-WHISPER_API_KEY = get_whisper_api_key()
+# Initialize OpenAI client
+client = AzureOpenAI(
+    api_key=get_whisper_api_key(),
+    azure_endpoint=get_whisper_endpoint(),
+    api_version=get_whisper_api_version(),
+)
 
-def transcribe_audio(audio_path):
+def split_audio(audio_path, chunk_size_ms=240000):  # Adjust chunk size if needed
+    audio = AudioSegment.from_file(audio_path)
+    chunks = [audio[i:i + chunk_size_ms] for i in range(0, len(audio), chunk_size_ms)]
+    return chunks
+
+def transcribe_audio_chunks(audio_path):
     try:
-        logger.info(f"Transcribing audio file {audio_path} using Whisper model.")
+        logger.info(f"Transcribing audio file {audio_path} in chunks.")
 
-        # Prepare headers
-        headers = {
-            'Authorization': f'Bearer {WHISPER_API_KEY}',
-            # 'Content-Type': 'multipart/form-data'  # Not needed; requests will set this
-        }
+        # Split audio into manageable chunks
+        chunks = split_audio(audio_path)
+        full_text = ""
+        all_segments = []
 
-        # Prepare the files payload
-        files = {
-            'file': open(audio_path, 'rb'),
-        }
+        for i, chunk in enumerate(chunks):
+            chunk_path = f"temp_chunk_{i}.mp3"
+            chunk.export(chunk_path, format="mp3")
 
-        # Prepare data payload if needed
-        data = {
-            'language': 'en',  # Adjust based on your model's requirements
-            'response_format': 'verbose_json',  # To get segments if supported
-        }
+            with open(chunk_path, "rb") as audio_file:
+                response = client.audio.transcriptions.create(
+                    file=audio_file,
+                    model=get_whisper_deployment_id(),
+                    response_format='verbose_json',
+                    language='en'
+                )
 
-        # Send POST request to the Whisper endpoint
-        response = requests.post(
-            WHISPER_ENDPOINT,
-            headers=headers,
-            files=files,
-            data=data,
-            timeout=600  # Adjust timeout as needed
-        )
+            os.remove(chunk_path)  # Clean up temporary chunk file
 
-        # Check for HTTP errors
-        response.raise_for_status()
+            # Append transcription results
+            full_text += response.text.strip() + " "
+            all_segments.extend(response.segments)
 
-        # Parse the JSON response
-        result = response.json()
-
-        # Extract full_text and segments
-        full_text = result.get('text', '').strip()
-        segments = result.get('segments', [])
-
-        logger.info("Transcription successful.")
-        return full_text, segments
+        logger.info("Transcription of all chunks successful.")
+        return full_text.strip(), all_segments
 
     except Exception as e:
-        logger.error(f"Error during transcription of file {audio_path}: {e}")
-        raise  # Re-raise the exception to be handled by the calling function
+        logger.error(f"Error during transcription: {e}")
+        raise
+
+
