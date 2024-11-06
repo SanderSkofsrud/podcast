@@ -2026,7 +2026,20 @@ MarkupSafe = ">=2.1.1"
 [package.extras]
 watchdog = ["watchdog (>=2.3)"]
 
+[[package]]
+name = "whisper"
+version = "1.1.10"
+description = "Fixed size round-robin style database"
+optional = false
+python-versions = "*"
+files = [
+    {file = "whisper-1.1.10.tar.gz", hash = "sha256:435b4fb843c4c752719bdf0511a652d5be710e9bb35ad9ebe3b133268ee31c44"},
+]
+
+[package.dependencies]
+six = "*"
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5c8c2bc8d9eda6d15eb818e6214f4f8f7edfd4ac2280e940d326fc113d0cf737"
+content-hash = "d44c21f6d371cdb82690c85793bf992b516ca1aae84cba31c1f3a99917b88726"
