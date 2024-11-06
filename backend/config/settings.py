@@ -3,11 +3,6 @@ import os
 
 load_dotenv()
 
-def get_speech_key():
-    return os.getenv("SPEECH_KEY")
-
-def get_speech_region():
-    return os.getenv("SPEECH_REGION")
 
 def get_openai_key():
     return os.getenv("AZURE_OPENAI_API_KEY")
@@ -20,6 +15,13 @@ def get_openai_version():
 
 def get_openai_name():
     return os.getenv("AZURE_OPENAI_NAME")
+
+def get_whisper_endpoint():
+    return os.getenv("WISPER_API_URL")
+
+def get_whisper_api_key():
+    return os.getenv("WISPER_API_KEY")
+
 
 from openai import AzureOpenAI
 
