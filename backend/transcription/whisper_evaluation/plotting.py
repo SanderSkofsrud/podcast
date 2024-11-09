@@ -8,6 +8,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from jinja2 import Template
 from whisper_evaluation.config import WHISPER_MODELS
+from whisper_evaluation.utils import normalize_text  # Import normalize_text
 
 logger = logging.getLogger(__name__)
 
@@ -318,7 +319,7 @@ def plot_heatmap(results: dict, run_dir: str):
 
 def get_diff_html(reference: str, hypothesis: str) -> str:
     """
-    Generate an HTML representation highlighting differences between reference and hypothesis.
+    Generate an HTML representation highlighting differences between normalized reference and hypothesis.
 
     Args:
         reference (str): The ground truth transcription.
@@ -327,9 +328,13 @@ def get_diff_html(reference: str, hypothesis: str) -> str:
     Returns:
         str: HTML string with differences highlighted.
     """
-    # Tokenize the texts into words
-    ref_tokens = reference.split()
-    hyp_tokens = hypothesis.split()
+    # Normalize both texts
+    normalized_ref = normalize_text(reference)
+    normalized_hyp = normalize_text(hypothesis)
+
+    # Tokenize the normalized texts into words
+    ref_tokens = normalized_ref.split()
+    hyp_tokens = normalized_hyp.split()
 
     # Initialize the HTML output
     html_output = []
@@ -341,11 +346,11 @@ def get_diff_html(reference: str, hypothesis: str) -> str:
         if tag == 'equal':
             html_output.append(' '.join(ref_tokens[i1:i2]))
         elif tag == 'replace':
-            html_output.append('<span style="background-color: #ff9999;">' + ' '.join(hyp_tokens[j1:j2]) + '</span>')
+            html_output.append('<span class="replace">' + ' '.join(hyp_tokens[j1:j2]) + '</span>')
         elif tag == 'insert':
-            html_output.append('<span style="background-color: #ffcc99;">' + ' '.join(hyp_tokens[j1:j2]) + '</span>')
+            html_output.append('<span class="insert">' + ' '.join(hyp_tokens[j1:j2]) + '</span>')
         elif tag == 'delete':
-            html_output.append('<span style="background-color: #99ccff;">' + ' '.join(ref_tokens[i1:i2]) + '</span>')
+            html_output.append('<span class="delete">' + ' '.join(ref_tokens[i1:i2]) + '</span>')
         html_output.append(' ')  # Add space between words
 
     html_output.append("</p>")
@@ -354,7 +359,7 @@ def get_diff_html(reference: str, hypothesis: str) -> str:
 
 def generate_diff_html(reference: str, hypothesis: str, model_name: str, audio_file: str, run_dir: str):
     """
-    Generate and save an HTML file highlighting differences between reference and hypothesis.
+    Generate and save an HTML file highlighting differences between normalized reference and hypothesis.
 
     Args:
         reference (str): The ground truth transcription.
@@ -377,12 +382,20 @@ def generate_diff_html(reference: str, hypothesis: str, model_name: str, audio_f
             .replace { background-color: #ff9999; }
             .insert { background-color: #ffcc99; }
             .delete { background-color: #99ccff; }
+            .legend { margin-top: 20px; }
+            .legend span { display: inline-block; width: 20px; height: 20px; margin-right: 5px; }
         </style>
     </head>
     <body>
         <div class="header">Model: {{ model_name }} | Audio File: {{ audio_file }}</div>
         <div class="transcription">
             {{ diff_html | safe }}
+        </div>
+        <div class="legend">
+            <h3>Legend:</h3>
+            <p><span class="replace"></span> Substitution</p>
+            <p><span class="insert"></span> Insertion</p>
+            <p><span class="delete"></span> Deletion</p>
         </div>
     </body>
     </html>

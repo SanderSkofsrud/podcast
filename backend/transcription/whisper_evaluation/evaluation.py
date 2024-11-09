@@ -14,11 +14,11 @@ from whisper_evaluation.config import (
     TRANSCRIPT_DIR,
     SUPPORTED_EXTENSIONS,
     DEVICE,
-    TRANSCRIPTIONS_DIR
+    TRANSCRIPTIONS_DIR  # New configuration
 )
 from whisper_evaluation.utils import load_ground_truth, normalize_text
 from whisper_evaluation.models import load_model
-from whisper_evaluation.plotting import generate_diff_html
+from whisper_evaluation.plotting import generate_diff_html  # New import
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ def calculate_wer(reference: str, hypothesis: str) -> float:
 
 def save_transcription(transcription: str, model_name: str, audio_file: str):
     """
-    Save the transcription text to a file under the model's directory.
+    Save the normalized transcription text to a file under the model's directory.
 
     Args:
         transcription (str): The transcribed text.
@@ -88,6 +88,9 @@ def save_transcription(transcription: str, model_name: str, audio_file: str):
         audio_file (str): The name of the audio file being transcribed.
     """
     try:
+        # Normalize the transcription before saving
+        normalized_transcription = normalize_text(transcription)
+
         # Ensure the model-specific transcription directory exists
         model_transcription_dir = os.path.join(TRANSCRIPTIONS_DIR, model_name)
         os.makedirs(model_transcription_dir, exist_ok=True)
@@ -96,11 +99,11 @@ def save_transcription(transcription: str, model_name: str, audio_file: str):
         transcription_file = os.path.splitext(audio_file)[0] + ".txt"
         transcription_path = os.path.join(model_transcription_dir, transcription_file)
 
-        # Save the transcription
+        # Save the normalized transcription
         with open(transcription_path, 'w', encoding='utf-8') as f:
-            f.write(transcription)
+            f.write(normalized_transcription)
 
-        logger.info(f"Process {current_process().name}: Saved transcription to '{transcription_path}'.")
+        logger.info(f"Process {current_process().name}: Saved normalized transcription to '{transcription_path}'.")
     except Exception as e:
         logger.error(f"Process {current_process().name}: Failed to save transcription for '{audio_file}' with model '{model_name}': {e}")
 
@@ -158,10 +161,10 @@ def evaluate_model(model_name: str, run_dir: str) -> Tuple[str, Dict[str, List[f
             continue
         results["speed"].append(speed)
 
-        # Save the transcription
+        # Save the normalized transcription
         save_transcription(transcription, model_name, audio_file)
 
-        # Load ground truth transcription
+        # Load and normalize ground truth transcription
         ground_truth = load_ground_truth(transcript_path)
         if ground_truth == "":
             logger.warning(f"Process {current_process().name}: Ground truth loading failed for '{audio_file}'. Skipping WER calculation.")

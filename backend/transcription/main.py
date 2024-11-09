@@ -18,6 +18,7 @@ from whisper_evaluation.plotting import (
     plot_heatmap,
     generate_summary_report  # New import
 )
+import webbrowser  # For opening the summary report automatically
 
 # ---------------------------
 # Configuration and Setup
@@ -106,8 +107,15 @@ def main():
     plot_heatmap(results, run_dir)
 
     # Step 5: Generate Summary Report
-    from whisper_evaluation.plotting import generate_summary_report
     generate_summary_report(aggregated, run_dir)
+
+    # Automatically open the summary report in the default web browser
+    report_path = os.path.join(run_dir, "summary_report.html")
+    if os.path.exists(report_path):
+        webbrowser.open('file://' + os.path.realpath(report_path))
+        logger.info(f"Opened summary report in the default web browser.")
+    else:
+        logger.warning(f"Summary report not found at '{report_path}'.")
 
     end_time = time.time()
     total_elapsed = end_time - start_time
