@@ -16,6 +16,9 @@ def get_openai_version():
 def get_openai_name():
     return os.getenv("AZURE_OPENAI_NAME")
 
+def get_llama_key():
+    return os.getenv("LLAMA_API_KEY")
+
 
 from openai import AzureOpenAI
 
