@@ -1,0 +1,48 @@
+<!-- podcast_processor/reporting/templates/full_transcript_template.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Full Transcript - {{ model_name }} - {{ audio_file }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            font-size: 22px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .transcript {
+            font-size: 16px;
+        }
+        .ad-highlight {
+            background-color: #90ee90; /* Light green */
+            font-weight: bold;
+        }
+        .legend {
+            margin-top: 20px;
+        }
+        .legend span {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            background-color: #90ee90;
+        }
+    </style>
+</head>
+<body>
+<div class="header">Model: {{ model_name }} | Audio File: {{ audio_file }}</div>
+<div class="transcript">
+    {{ transcript_html | safe }}
+</div>
+<div class="legend">
+    <h3>Legend:</h3>
+    <p><span class="ad-highlight"></span> Detected Advertisement</p>
+</div>
+</body>
+</html>
