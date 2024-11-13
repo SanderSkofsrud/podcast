@@ -3,60 +3,51 @@
 import string
 import re
 import logging
+from typing import List, Dict
 
 logger = logging.getLogger(__name__)
 
 def normalize_text(text: str) -> str:
     """
-    Normalize text by:
-    - Removing bracketed content (e.g., [LAUGHS], (HE'S))
-    - Replacing ellipses with a space
-    - Converting to lowercase
-    - Preserving apostrophes in contractions and possessives
-    - Removing excessive punctuation
-    - Handling hyphens and dashes
-    - Standardizing whitespace and newlines
-    - **Ignoring patterns like double dashes and similar artifacts**
+    Normalize text by removing brackets, punctuation, and standardizing whitespace.
     """
     try:
-        # 1. Remove content within various types of brackets: [], (), {}, <>
+        # Remove content within brackets
         text = re.sub(r'[\[\(\{<].*?[\]\)\}>]', '', text)
 
-        # 2. Replace ellipses (two or more periods) with a single space
+        # Replace ellipses with space
         text = re.sub(r'\.{2,}', ' ', text)
 
-        # 3. Convert text to lowercase
+        # Convert to lowercase
         text = text.lower()
 
-        # 4. Replace different apostrophe types with standard apostrophe
+        # Replace different apostrophe types
         text = text.replace("’", "'").replace("‘", "'").replace("´", "'")
 
-        # 5. Preserve apostrophes in contractions and possessives by temporarily replacing them
+        # Preserve apostrophes in contractions and possessives
         placeholder = ' ###APOSTROPHE### '
         text = re.sub(r"(?<=\w)'(?=\w)", placeholder, text)
 
-        # 6. Remove all punctuation except apostrophes
+        # Remove all punctuation except apostrophes
         punctuation_to_remove = string.punctuation.replace("'", "")
         translator = str.maketrans('', '', punctuation_to_remove)
         text = text.translate(translator)
 
-        # 7. Restore apostrophes
+        # Restore apostrophes
         text = text.replace(' APOSTROPHE ', "'")
         text = text.replace("’", "'")
 
-        # 8. Replace multiple hyphens or dashes with a single space
+        # Replace multiple hyphens or dashes with space
         text = re.sub(r'[-–—]{2,}', ' ', text)
 
-        # 9. Remove double dashes and similar patterns**
-        # This step removes any remaining double dashes or similar artifacts that may not have been caught
-        # by the previous hyphen/dash handling step.
-        text = re.sub(r'--+', ' ', text)  # Removes sequences like --, ---, etc.
-        text = re.sub(r'—+', ' ', text)   # Removes em-dashes if any remain
+        # Remove double dashes and similar patterns
+        text = re.sub(r'--+', ' ', text)
+        text = re.sub(r'—+', ' ', text)
 
-        # 10. Replace any remaining non-standard whitespace characters with a single space
+        # Standardize whitespace
         text = re.sub(r'\s+', ' ', text)
 
-        # 11. Strip leading and trailing whitespace
+        # Strip leading and trailing whitespace
         text = text.strip()
 
         return text
@@ -77,3 +68,26 @@ def load_ground_truth(transcript_path: str) -> str:
     except Exception as e:
         logger.error(f"Error loading ground truth from '{transcript_path}': {e}")
         return ""
+
+def remove_ads_from_transcription(transcription: str, ads: List[Dict]) -> str:
+    """
+    Remove ads from transcription text.
+
+    Args:
+        transcription (str): The transcription text.
+        ads (List[Dict]): List of ads detected, each with 'text', 'start', 'end'.
+
+    Returns:
+        processed_transcription (str): Transcription with ads removed.
+    """
+    for ad in ads:
+        ad_text = ad.get('text', '')
+        if ad_text:
+            # Escape special characters
+            escaped_ad_text = re.escape(ad_text)
+            # Remove ad text
+            transcription = re.sub(rf'\b{escaped_ad_text}\b', '', transcription, flags=re.IGNORECASE)
+
+    # Clean up extra spaces
+    transcription = ' '.join(transcription.split())
+    return transcription

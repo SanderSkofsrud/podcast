@@ -8,11 +8,10 @@ import torch
 # ---------------------------
 
 # Define Whisper model sizes to evaluate
-WHISPER_MODELS = ["tiny", "small", "large"]
+WHISPER_MODELS = ["tiny"]
 
 # Define LLM models for ad detection
-#LLM_MODELS = ["gpt-3.5-turbo", "gpt-4", "gpt-4o-mini", "gpt-4o"]
-LLM_MODELS = ["gpt-4o-mini", "gpt-4-turbo"]
+LLM_MODELS = ["gpt-4o-mini"]
 
 # ---------------------------
 # Directory Configurations
@@ -26,6 +25,10 @@ AUDIO_DIR = os.path.join(DATA_DIR, "audio")                  # Directory contain
 TRANSCRIPT_DIR = os.path.join(DATA_DIR, "transcripts")       # Directory containing ground truth transcriptions
 TRANSCRIPTIONS_DIR = os.path.join(DATA_DIR, "transcriptions") # Directory to save model transcriptions
 AD_DETECTIONS_DIR = os.path.join(DATA_DIR, "ad_detections")  # Directory to save ad detection results
+
+# Ground truth directories
+GROUND_TRUTH_ADS_DIR = os.path.join(DATA_DIR, "ground_truth_ads")  # Directory containing ground truth ads
+GROUND_TRUTH_NO_ADS_DIR = os.path.join(DATA_DIR, "ground_truth_no_ads")  # Ground truth transcripts without ads
 
 # Output directories
 RESULTS_DIR = os.path.join(BASE_DIR, "results")              # Directory to save all results
@@ -45,3 +48,5 @@ os.makedirs(TRANSCRIPTIONS_DIR, exist_ok=True)
 os.makedirs(AD_DETECTIONS_DIR, exist_ok=True)
 os.makedirs(PLOTS_DIR, exist_ok=True)
 os.makedirs(REPORTS_DIR, exist_ok=True)
+os.makedirs(GROUND_TRUTH_ADS_DIR, exist_ok=True)
+os.makedirs(GROUND_TRUTH_NO_ADS_DIR, exist_ok=True)

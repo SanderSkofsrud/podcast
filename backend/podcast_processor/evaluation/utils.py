@@ -1,6 +1,8 @@
 # podcast_processor/evaluation/utils.py
 
 import logging
+import os
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -18,3 +20,23 @@ def load_ground_truth(transcript_path: str) -> str:
     except Exception as e:
         logger.error(f"Error loading ground truth from '{transcript_path}': {e}")
         return ""
+
+def load_ground_truth_ads(ground_truth_ads_dir: str) -> dict:
+    """
+    Load ground truth ads from JSON files.
+
+    Returns:
+        ground_truth_ads: Dict[audio_file] -> List[ads]
+    """
+    ground_truth_ads = {}
+    for filename in os.listdir(ground_truth_ads_dir):
+        if filename.endswith('.json'):
+            audio_file = filename.replace('_ads.json', '.mp3')  # Adjust extension as needed
+            filepath = os.path.join(ground_truth_ads_dir, filename)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    ads = json.load(f)
+                    ground_truth_ads[audio_file] = ads
+            except Exception as e:
+                logger.error(f"Error loading ground truth ads from '{filepath}': {e}")
+    return ground_truth_ads

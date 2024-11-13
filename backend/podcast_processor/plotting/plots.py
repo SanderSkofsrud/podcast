@@ -56,7 +56,7 @@ def plot_ad_detection_metrics(ad_detections: Dict[str, Dict[str, List[Dict]]], r
     ads_counts = [model_ads_count[model] for model in models]
 
     plt.figure(figsize=(12, 8))
-    sns.barplot(x=models, y=ads_counts, palette="viridis")
+    sns.barplot(x=models, y=ads_counts, palette=sns.color_palette("viridis", n_colors=len(models)))
     plt.xlabel("LLM Models", fontsize=12)
     plt.ylabel("Total Advertisements Detected", fontsize=12)
     plt.title("Advertisements Detected per LLM Model", fontsize=14)
@@ -70,10 +70,6 @@ def plot_combined_metrics(aggregated: dict, ad_detections: Dict[str, Dict[str, L
     """
     Create combined plots that show transcription and ad detection metrics together.
     """
-    # Example: Number of ads detected vs. transcription accuracy per model
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-
     # Aggregate ads detected per LLM model
     ads_detected = {model: sum(len(ads) for ads in detections.values()) for model, detections in ad_detections.items()}
 
@@ -170,3 +166,54 @@ def plot_heatmap(aggregated: dict, run_dir: str):
     plt.savefig(plot_path)
     plt.close()
     logger.info(f"Heatmap of correlations saved as '{plot_path}'.")
+
+def plot_ad_detection_precision_recall(ad_detection_metrics: Dict[str, Dict[str, float]], run_dir: str):
+    """
+    Plot precision, recall, and F1 score for ad detection.
+    """
+    models = list(ad_detection_metrics.keys())
+    precision = [ad_detection_metrics[model]['precision'] for model in models]
+    recall = [ad_detection_metrics[model]['recall'] for model in models]
+    f1_score = [ad_detection_metrics[model]['f1_score'] for model in models]
+
+    df = pd.DataFrame({
+        'Model': models,
+        'Precision': precision,
+        'Recall': recall,
+        'F1 Score': f1_score
+    })
+
+    df_melted = df.melt(id_vars='Model', value_vars=['Precision', 'Recall', 'F1 Score'], var_name='Metric', value_name='Score')
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(data=df_melted, x='Model', y='Score', hue='Metric')
+    plt.title('Ad Detection Metrics per Model')
+    plt.ylim(0, 1)
+    plt.legend(loc='upper right')
+    plt.tight_layout()
+    plot_path = os.path.join(run_dir, "ad_detection_metrics.png")
+    plt.savefig(plot_path)
+    plt.close()
+    logger.info(f"Ad detection metrics plot saved as '{plot_path}'.")
+
+def plot_processed_transcription_wer(processed_transcription_metrics: Dict[str, Dict[str, float]], run_dir: str):
+    """
+    Plot the average WER after ad removal per model.
+    """
+    models = list(processed_transcription_metrics.keys())
+    avg_wer = [processed_transcription_metrics[model]['avg_wer'] for model in models]
+
+    df = pd.DataFrame({
+        'Model': models,
+        'WER': avg_wer
+    })
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(data=df, x='Model', y='WER')
+    plt.title('Average WER after Ad Removal per Model')
+    plt.ylim(0, max(avg_wer) + 0.1)
+    plt.tight_layout()
+    plot_path = os.path.join(run_dir, "processed_transcription_wer.png")
+    plt.savefig(plot_path)
+    plt.close()
+    logger.info(f"Processed transcription WER plot saved as '{plot_path}'.")

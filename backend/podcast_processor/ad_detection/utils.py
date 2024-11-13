@@ -12,14 +12,15 @@ def parse_ads_response(response: str) -> List[Dict]:
     Parse the LLM response to extract advertisements with text and timestamps.
     """
     ads = []
-    ad_blocks = re.split(r'Ad\s*\d+:', response, flags=re.IGNORECASE)[1:]  # Split and ignore the first empty element
+    ad_blocks = re.split(r'Ad\s*\d+:', response, flags=re.IGNORECASE)[1:]
     for block in ad_blocks:
-        text_match = re.search(r'Text:\s*(.*?)\n', block, re.DOTALL | re.IGNORECASE)
+        text_match = re.search(r'Text:\s*(.*?)(?:\n|$)', block, re.DOTALL | re.IGNORECASE)
         start_match = re.search(r'Start:\s*([\d:.]+)', block, re.IGNORECASE)
         end_match = re.search(r'End:\s*([\d:.]+)', block, re.IGNORECASE)
         ad = {}
         if text_match:
-            ad['text'] = text_match.group(1).strip()
+            ad_text = text_match.group(1).strip()
+            ad['text'] = ad_text
         if start_match:
             ad['start'] = start_match.group(1).strip()
         if end_match:
