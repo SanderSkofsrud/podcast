@@ -4,8 +4,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-TRANSCRIPTION_DIR = '../data/transcriptions'
-ANNOTATION_DIR = '../data/annotations'
+TRANSCRIPTION_DIR = './data/transcriptions'
+ANNOTATION_DIR = './data/annotations'
 
 def load_evaluation_data() -> List[Tuple[str, int]]:
     """

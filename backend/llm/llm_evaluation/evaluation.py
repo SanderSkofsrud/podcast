@@ -11,6 +11,8 @@ from openai import OpenAI
 
 logger = logging.getLogger(__name__)
 
+import re
+
 def classify_chunk(client, model_name: str, chunk_text: str) -> int:
     """
     Classifies a text chunk as an advertisement or not using the appropriate client.
@@ -23,30 +25,39 @@ def classify_chunk(client, model_name: str, chunk_text: str) -> int:
     Returns:
         int: 1 if advertisement, 0 if not.
     """
-    try:
-        response = client.chat.completions.create(
-            model=model_name,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are an assistant that identifies whether a given text is an advertisement or not. "
-                        "Respond with '1' if the text is an advertisement and '0' if it is not. "
-                        "Provide only the number '1' or '0' in your response, without any additional text."
-                    )
-                },
-                {"role": "user", "content": chunk_text}
-            ]
-        )
-        classification = response.choices[0].message.content.strip()
-        print(f"Model Raw Output: '{classification}'")
-        if classification not in ('0', '1'):
-            logger.warning(f"Unexpected model output: '{classification}'. Skipping this chunk.")
-            return -1
-        return int(classification)
-    except Exception as e:
-        logger.exception(f"Error during classification: {e}")
-        return -1
+    for attempt in range(3):  # Retry up to 3 times
+        try:
+            response = client.chat.completions.create(
+                model=model_name,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an assistant that identifies whether a given text is an advertisement or not. "
+                            "Respond with '1' if the text is an advertisement and '0' if it is not. "
+                            "Provide only the number '1' or '0' in your response, without any additional text."
+                        )
+                    },
+                    {"role": "user", "content": chunk_text}
+                ]
+            )
+            classification = response.choices[0].message.content.strip()
+            print(f"Model Raw Output: '{classification}'")
+
+            # Use regular expression to extract '1' or '0' from the response
+            match = re.search(r'\b(0|1)\b', classification)
+            if match:
+                return int(match.group(1))
+            else:
+                logger.warning(f"Unexpected model output: '{classification}'. Retrying...")
+
+        except Exception as e:
+            logger.exception(f"Error during classification attempt {attempt + 1}: {e}")
+
+    # If we exhausted retries, return -1 to indicate failure
+    logger.error(f"Failed to classify chunk after 3 attempts. Skipping this chunk.")
+    return -1
+
 
 def evaluate_model(model_name: str, data: List[Tuple[str, int]]) -> Dict[str, float]:
     """
