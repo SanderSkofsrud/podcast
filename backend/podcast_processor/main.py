@@ -16,7 +16,8 @@ from podcast_processor.config import (
     AUDIO_DIR,
     TRANSCRIPTIONS_DIR,
     GROUND_TRUTH_NO_ADS_DIR,
-    GROUND_TRUTH_ADS_DIR, TRANSCRIPT_DIR
+    GROUND_TRUTH_ADS_DIR,
+    TRANSCRIPT_DIR
 )
 from podcast_processor.transcription.transcribe import transcribe_all_models
 from podcast_processor.ad_detection.detect_ads import detect_ads_in_transcriptions
@@ -38,7 +39,8 @@ from podcast_processor.plotting.plots import (
 from podcast_processor.reporting.report import (
     generate_summary_report,
     generate_full_transcript_html,
-    generate_diff_html
+    generate_diff_html,
+    load_transcript_segments
 )
 from podcast_processor.evaluation.utils import (
     load_ground_truth,
@@ -193,16 +195,19 @@ def main():
                 logger.warning(f"No normalized transcript for '{audio_file}' in model '{model_name}'. Skipping.")
                 continue
 
+            # Load the transcript segments
+            transcript_segments = load_transcript_segments(model_name, audio_file)
+            if not transcript_segments:
+                logger.warning(f"No transcript segments found for '{audio_file}' with model '{model_name}'.")
+                continue
+
             # Extract detected ads for this audio file and model
             ads = ad_detections.get(model_name, {}).get(audio_file, [])
 
-            # Extract ad texts
-            ads_texts = [ad.get('text', '') for ad in ads if isinstance(ad, dict) and 'text' in ad]
-
-            # Generate Full Transcript HTML
+            # Generate Full Transcript HTML with ads highlighted
             generate_full_transcript_html(
-                transcript=transcript,
-                ads=ads_texts,
+                transcript_segments=transcript_segments,
+                ads=ads,
                 model_name=model_name,
                 audio_file=audio_file,
                 run_dir=run_dir

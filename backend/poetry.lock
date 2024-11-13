@@ -3122,6 +3122,19 @@ doc = ["reno", "sphinx"]
 test = ["pytest", "tornado (>=4.5)", "typeguard"]
 
 [[package]]
+name = "thefuzz"
+version = "0.18.0"
+description = "Fuzzy string matching in python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "thefuzz-0.18.0.tar.gz", hash = "sha256:387f2f98b3cdba107787d2589f54f27e9cbc214d4a3b489ffa3b2dcc711155c6"},
+]
+
+[package.extras]
+speedup = ["python-levenshtein (>=0.12)"]
+
+[[package]]
 name = "tiktoken"
 version = "0.8.0"
 description = "tiktoken is a fast BPE tokeniser for use with OpenAI's models"
@@ -3631,4 +3644,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "78369837454799f899a84eb3f436836d411fbfdde60cb65f42dbf5e0b2a0fb16"
+content-hash = "80c14c996f782c8e90809d1f276e7a98b45c7bc9fa2b144888f2a0b60cbd2bc5"

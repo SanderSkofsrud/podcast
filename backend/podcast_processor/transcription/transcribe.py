@@ -4,6 +4,7 @@ import os
 import time
 import logging
 import torch
+import json
 from typing import Tuple, Dict, List
 from multiprocessing import Pool, cpu_count, current_process
 from functools import partial
@@ -52,9 +53,9 @@ def transcribe_audio(model: whisper.Whisper, audio_path: str, model_name: str) -
         logger.error(f"Process {current_process().name}: Error transcribing '{audio_path}': {e}")
         return "", 0.0, []
 
-def save_transcription(transcription: str, model_name: str, audio_file: str, run_dir: str):
+def save_transcription(transcription: str, segments: List[Dict], model_name: str, audio_file: str, run_dir: str):
     """
-    Save the normalized transcription text to a file under the model's directory.
+    Save the normalized transcription text and segments to files under the model's directory.
     """
     try:
         normalized_transcription = normalize_text(transcription)
@@ -65,6 +66,13 @@ def save_transcription(transcription: str, model_name: str, audio_file: str, run
         with open(transcription_path, 'w', encoding='utf-8') as f:
             f.write(normalized_transcription)
         logger.info(f"Process {current_process().name}: Saved normalized transcription to '{transcription_path}'.")
+
+        # Save the transcription segments
+        segments_file = os.path.splitext(audio_file)[0] + "_segments.json"
+        segments_path = os.path.join(model_transcription_dir, segments_file)
+        with open(segments_path, 'w', encoding='utf-8') as f:
+            json.dump(segments, f, indent=4)
+        logger.info(f"Process {current_process().name}: Saved transcription segments to '{segments_path}'.")
     except Exception as e:
         logger.error(f"Process {current_process().name}: Failed to save transcription for '{audio_file}' with model '{model_name}': {e}")
 
@@ -94,7 +102,7 @@ def transcribe_model(model_name: str, run_dir: str, audio_files: List[str], devi
             continue
         results["speed"].append(speed)
 
-        save_transcription(transcription, model_name, audio_file, run_dir)
+        save_transcription(transcription, segments, model_name, audio_file, run_dir)
 
         ground_truth = load_ground_truth(transcript_path)
         if ground_truth == "":

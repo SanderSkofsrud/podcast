@@ -2,9 +2,13 @@
 
 import os
 import logging
-import difflib
-from jinja2 import Environment, FileSystemLoader, Template
+import re
+import json
+from jinja2 import Environment, FileSystemLoader
 from typing import Dict, List
+from thefuzz import process, fuzz
+from podcast_processor.transcription.utils import normalize_text
+from podcast_processor.config import TRANSCRIPTIONS_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -38,30 +42,69 @@ def generate_diff_html(reference: str, hypothesis: str, model_name: str, audio_f
 
     logger.info(f"Saved transcription diff HTML to '{html_path}'.")
 
-def highlight_ads(transcript: str, ads: List[str]) -> str:
-    highlighted_transcript = transcript
+def convert_time_to_seconds(time_str: str) -> float:
+    """
+    Convert a time string in 'HH:MM:SS.ss', 'MM:SS.ss', or 'SS.ss' format to seconds.
+    """
+    try:
+        parts = time_str.strip().split(':')
+        # Ensure that seconds may include fractions
+        if len(parts) == 3:
+            hours, minutes, seconds = parts
+        elif len(parts) == 2:
+            hours = '0'
+            minutes, seconds = parts
+        elif len(parts) == 1:
+            hours = '0'
+            minutes = '0'
+            seconds = parts[0]
+        else:
+            return 0.0
+        total_seconds = int(hours) * 3600 + int(minutes) * 60 + float(seconds)
+        return total_seconds
+    except Exception as e:
+        logger.error(f"Error converting time '{time_str}' to seconds: {e}")
+        return 0.0
+
+def highlight_ads(transcript_segments: List[Dict], ads: List[Dict]) -> str:
+    transcript_text = ''.join([segment['text'] for segment in transcript_segments])
+    highlighted_transcript = transcript_text
+    offset = 0  # Offset due to added HTML tags
 
     for ad in ads:
-        # Find approximate matches of the ad text in the transcript
-        s = difflib.SequenceMatcher(None, transcript.lower(), ad.lower())
-        match = s.find_longest_match(0, len(transcript), 0, len(ad))
-        if match.size > 0:
-            # Extract the matching text from the transcript
-            match_text = transcript[match.a: match.a + match.size]
-            # Highlight the matching text
-            highlighted_transcript = highlighted_transcript.replace(
-                match_text,
-                f'<span class="ad-highlight">{match_text}</span>'
-            )
+        ad_text = ad.get('text', '')
+        if ad_text:
+            # Normalize texts
+            transcript_text_norm = normalize_text(transcript_text)
+            ad_text_norm = normalize_text(ad_text)
+
+            # Find the best match
+            match = re.search(re.escape(ad_text_norm), transcript_text_norm)
+            if match:
+                start_idx = match.start() + offset
+                end_idx = match.end() + offset
+                # Insert highlight tags
+                highlighted_transcript = (
+                        highlighted_transcript[:start_idx] +
+                        '<span class="ad-highlight">' +
+                        highlighted_transcript[start_idx:end_idx] +
+                        '</span>' +
+                        highlighted_transcript[end_idx:]
+                )
+                offset += len('<span class="ad-highlight"></span>')
+            else:
+                logger.warning(f"Ad text not found in transcript: '{ad_text}'")
     return highlighted_transcript
 
 
-def generate_full_transcript_html(transcript: str, ads: List[str], model_name: str, audio_file: str, run_dir: str):
+
+
+def generate_full_transcript_html(transcript_segments: List[Dict], ads: List[Dict], model_name: str, audio_file: str, run_dir: str):
     """
     Generate and save an HTML file displaying the full transcript with detected ads highlighted.
     """
     # Highlight detected ads in the transcript
-    transcript_html = highlight_ads(transcript, ads)
+    transcript_html = highlight_ads(transcript_segments, ads)
 
     # Create a Jinja2 environment pointing to the templates directory
     templates_dir = os.path.join(os.path.dirname(__file__), "templates")
@@ -85,6 +128,19 @@ def generate_full_transcript_html(transcript: str, ads: List[str], model_name: s
         f.write(rendered_html)
 
     logger.info(f"Saved full transcript HTML to '{html_path}'.")
+
+def load_transcript_segments(model_name: str, audio_file: str) -> List[Dict]:
+    """
+    Load the transcript segments from a JSON file.
+    """
+    transcript_file = os.path.splitext(audio_file)[0] + "_segments.json"
+    transcript_path = os.path.join(TRANSCRIPTIONS_DIR, model_name, transcript_file)
+    if not os.path.exists(transcript_path):
+        logger.error(f"Transcript segments file not found: {transcript_path}")
+        return []
+    with open(transcript_path, 'r', encoding='utf-8') as f:
+        segments = json.load(f)
+    return segments
 
 def generate_summary_report(aggregated: dict, ad_detections: Dict[str, Dict[str, List[Dict]]], ad_detection_metrics: Dict[str, Dict[str, float]], processed_transcription_metrics: Dict[str, Dict[str, float]], run_dir: str):
     """

@@ -7,8 +7,10 @@ import editdistance
 import json
 import os
 from podcast_processor.config import TRANSCRIPTIONS_DIR
+from podcast_processor.reporting.report import convert_time_to_seconds
 from podcast_processor.transcription.utils import normalize_text
 from podcast_processor.evaluation.utils import load_ground_truth_ads
+from thefuzz import fuzz
 
 logger = logging.getLogger(__name__)
 
@@ -51,38 +53,41 @@ def save_transcription_results(aggregated: dict, run_dir: str):
     except Exception as e:
         logger.error(f"Error saving transcription results: {e}")
 
-def evaluate_ad_detection(ad_detections: Dict[str, Dict[str, List[Dict]]], ground_truth_ads: Dict[str, List[Dict]]) -> Dict[str, Dict[str, float]]:
-    """
-    Evaluate ad detection by computing precision, recall, F1 score for each model.
-    """
-    ad_detection_metrics = {}
-    for model_name, model_ads in ad_detections.items():
-        tps = 0  # True Positives
-        fps = 0  # False Positives
-        fns = 0  # False Negatives
-        for audio_file, detected_ads in model_ads.items():
-            gt_ads = ground_truth_ads.get(audio_file, [])
-
-            # Extract ad texts
-            detected_ad_texts = set(ad['text'] for ad in detected_ads if 'text' in ad)
-            gt_ad_texts = set(ad['text'] for ad in gt_ads if 'text' in ad)
-
-            tps += len(detected_ad_texts & gt_ad_texts)
-            fps += len(detected_ad_texts - gt_ad_texts)
-            fns += len(gt_ad_texts - detected_ad_texts)
-
-        precision = tps / (tps + fps) if (tps + fps) > 0 else 0.0
-        recall = tps / (tps + fns) if (tps + fns) > 0 else 0.0
+def evaluate_ad_detection(detections: Dict[str, Dict[str, List[Dict]]],
+                          ground_truth_ads: Dict[str, List[Dict]]) -> Dict[str, Dict[str, float]]:
+    metrics = {}
+    for model_name, model_detections in detections.items():
+        tp = 0  # True Positives
+        fp = 0  # False Positives
+        fn = 0  # False Negatives
+        for audio_file, detected_ads in model_detections.items():
+            ground_truth = ground_truth_ads.get(audio_file, [])
+            detected_texts = [normalize_text(ad['text']) for ad in detected_ads]
+            ground_truth_texts = [normalize_text(ad['text']) for ad in ground_truth]
+            detected_texts_copy = detected_texts.copy()
+            for gt_text in ground_truth_texts:
+                match_found = False
+                for det_text in detected_texts_copy:
+                    similarity = fuzz.ratio(gt_text, det_text)
+                    if similarity >= 80:
+                        tp += 1
+                        detected_texts_copy.remove(det_text)  # Avoid duplicate counting
+                        match_found = True
+                        break
+                if not match_found:
+                    fn += 1
+            fp += len(detected_texts_copy)
+        precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
         f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
-
-        ad_detection_metrics[model_name] = {
+        metrics[model_name] = {
             'precision': precision,
             'recall': recall,
             'f1_score': f1_score
         }
-        logger.info(f"Ad Detection - Model: {model_name} | Precision: {precision:.2f} | Recall: {recall:.2f} | F1 Score: {f1_score:.2f}")
+        logger.info(f"Ad Detection Metrics for '{model_name}': Precision={precision}, Recall={recall}, F1 Score={f1_score}")
+    return metrics
 
-    return ad_detection_metrics
 
 def evaluate_processed_transcriptions(processed_transcriptions: Dict[str, Dict[str, str]], ground_truth_no_ads_dir: str) -> Dict[str, Dict[str, float]]:
     """

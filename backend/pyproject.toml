@@ -23,6 +23,7 @@ editdistance = "^0.8.1"
 jinja2 = "^3.0.3"
 pandas = "2.2.3"
 plotly = "^5.3.1"
+thefuzz = "^0.18.0"
 
 # Specify CUDA-enabled torch packages via direct URLs
 # Uncomment and adjust these if you need CUDA support

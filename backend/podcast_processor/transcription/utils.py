@@ -4,6 +4,7 @@ import string
 import re
 import logging
 from typing import List, Dict
+from thefuzz import process, fuzz
 
 logger = logging.getLogger(__name__)
 
@@ -80,14 +81,17 @@ def remove_ads_from_transcription(transcription: str, ads: List[Dict]) -> str:
     Returns:
         processed_transcription (str): Transcription with ads removed.
     """
+    transcription_normalized = normalize_text(transcription)
     for ad in ads:
         ad_text = ad.get('text', '')
         if ad_text:
-            # Escape special characters
-            escaped_ad_text = re.escape(ad_text)
-            # Remove ad text
-            transcription = re.sub(rf'\b{escaped_ad_text}\b', '', transcription, flags=re.IGNORECASE)
-
+            ad_text_normalized = normalize_text(ad_text)
+            # Use fuzzy matching to find the ad text in the transcription
+            match = process.extractOne(ad_text_normalized, [transcription_normalized], scorer=fuzz.token_set_ratio)
+            if match and match[1] >= 80:
+                # Remove the matched ad text from the transcription
+                match_text = ad_text
+                transcription = transcription.replace(match_text, '')
     # Clean up extra spaces
     transcription = ' '.join(transcription.split())
     return transcription
