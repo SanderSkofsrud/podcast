@@ -17,15 +17,10 @@ def get_openai_name():
     return os.getenv("AZURE_OPENAI_NAME")
 
 
-from openai import AzureOpenAI
+from openai import OpenAI
 
 # Sett opp klienten
-client = AzureOpenAI(
-    api_key=get_openai_key(),  
-    api_version=get_openai_version(),
-    azure_endpoint=get_openai_endpoint(),  
-    azure_deployment=get_openai_name()  
-)
+client = OpenAI()
 
 
 

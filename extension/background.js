@@ -53,3 +53,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     return true; // Indicates you wish to send a response asynchronously
 });
+
+// Initialize the state when the service worker starts
+function initialize() {
+    chrome.storage.local.get(['isAdBlockerEnabled'], (result) => {
+        isAdBlockerEnabled = result.isAdBlockerEnabled || false;
+        updateProxySettings();
+    });
+}
+
+chrome.runtime.onInstalled.addListener(initialize);
+chrome.runtime.onStartup.addListener(initialize);
+

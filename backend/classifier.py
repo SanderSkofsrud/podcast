@@ -36,7 +36,7 @@ def classify_texts(texts):
     for attempt in range(max_retries):
         try:
             response = client.chat.completions.create(
-                model=get_openai_name(),
+                model="gpt-4o-mini",
                 messages=messages,
                 temperature=0.0  # For deterministic output
             )

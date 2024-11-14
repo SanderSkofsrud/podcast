@@ -7,7 +7,6 @@ from audio_editor import remove_ad_segments
 import os
 import logging
 import uuid
-import json
 from io import BytesIO
 
 logging.basicConfig(level=logging.INFO)
@@ -18,12 +17,26 @@ app = Flask(__name__)
 @app.route('/process_audio', methods=['POST'])
 def process_audio():
     logger.info("Received audio processing request.")
+    if 'audio/mpeg' not in request.headers.get('Content-Type', ''):
+        logger.info(f"Unsupported media type: {request.headers.get('Content-Type', '')}")
+        return "Unsupported media type. Please send audio data as 'audio/mpeg'.", 415
 
-    # Save the uploaded audio file with a unique filename
-    audio_file = request.files['audio']
+    # Generate a unique filename for the temporary audio file
     unique_id = str(uuid.uuid4())
     audio_filename = f"temp_audio_{unique_id}.mp3"
-    audio_file.save(audio_filename)
+
+    # Open a file to write the incoming data
+    with open(audio_filename, 'wb') as f:
+        # Read the data in chunks from the request stream
+        chunk_size = 4096  # Adjust the chunk size as needed
+        while True:
+            chunk = request.stream.read(chunk_size)
+            if not chunk:
+                break
+            f.write(chunk)
+            f.flush()
+            # Optionally, you can start processing the data here if your functions support streaming
+
     logger.info(f"Saved audio file to {audio_filename}.")
 
     try:
@@ -63,14 +76,9 @@ def process_audio():
                 logger.error(f"Error removing temporary files: {e}")
             return response
 
-        # Read the file into a BytesIO object
+        # Read the edited audio file into a BytesIO object
         with open(edited_audio_filename, 'rb') as f:
             file_data = BytesIO(f.read())
-
-        # Delete the edited audio file immediately after reading
-        if os.path.exists(edited_audio_filename):
-            os.remove(edited_audio_filename)
-            logger.info(f"Removed temporary file {edited_audio_filename}.")
 
         response = send_file(
             file_data,
