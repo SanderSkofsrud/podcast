@@ -15,6 +15,87 @@
         th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }
         th { background-color: #f2f2f2; }
         .ad-highlight { background-color: yellow; }
+
+        h1 {
+            text-align: left;
+        }
+
+        ul {
+            list-style-type: none;
+            background: #e1e1e1;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+
+        }
+
+        .transcript ul {
+            list-style-type: none;
+            background: #e1e1e1;
+            border-radius: 10px;
+            padding: 1rem; /* Add padding inside the container */
+            display: flex;
+            flex-direction: column; /* Makes the items stack vertically */
+            gap: 1rem; /* Adds spacing between the items */
+        }
+
+        .transcript-mini ul {
+            list-style-type: none;
+            background: #e1e1e1;
+            border-radius: 10px;
+            padding: 1rem; /* Add padding inside the container */
+            display: flex; /* Change to flexbox */
+            flex-direction: row; /* Align items horizontally */
+            gap: 1rem; /* Adds spacing between the items */
+        }
+
+        .transcript-mini ul li {
+            padding: 10px;
+            background: #ececec;
+            border-radius: 10px;
+        }
+
+
+        .transcript li {
+            padding: 10px;
+
+            border-bottom: 1px solid #dddddd;
+        }
+
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #dddddd;
+        }
+
+        strong {
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        li a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        li a:hover {
+            text-decoration: underline;
+        }
+
+        li a:visited {
+            color: #333;
+        }
+
+        li a:active {
+            color: #333;
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -29,10 +110,10 @@
         <li><img src="processed_transcription_wer.png" alt="Processed Transcription WER"></li>
     </ul>
 </div>
-<div class="section">
+<div class="transcript">
     <h2>Transcription Differences</h2>
     <p>Click on a model to view the transcription differences and full transcripts with advertisements highlighted for each audio file:</p>
-    <ul>
+    <ul class="transcript-mini">
         {% for model in aggregated['model'] %}
         <li>
             <strong>{{ model }}</strong>
