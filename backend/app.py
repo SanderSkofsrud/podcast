@@ -31,6 +31,7 @@ def process_audio():
         chunk_size = 4096  # Adjust the chunk size as needed
         while True:
             chunk = request.stream.read(chunk_size)
+            logger.debug(f"Received chunk of size {len(chunk)} bytes.")
             if not chunk:
                 break
             f.write(chunk)
