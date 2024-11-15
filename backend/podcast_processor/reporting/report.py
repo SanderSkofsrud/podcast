@@ -66,45 +66,64 @@ def convert_time_to_seconds(time_str: str) -> float:
         logger.error(f"Error converting time '{time_str}' to seconds: {e}")
         return 0.0
 
-def highlight_ads(transcript_segments: List[Dict], ads: List[Dict]) -> str:
-    transcript_text = ''.join([segment['text'] for segment in transcript_segments])
-    highlighted_transcript = transcript_text
-    offset = 0  # Offset due to added HTML tags
+def highlight_ads(transcript_segments: List[Dict], ground_truth_ads: List[Dict], detected_ads: List[Dict]) -> str:
+    """
+    Highlight ads in the transcript segments based on time overlap with ground truth and detected ads.
+    """
+    highlighted_transcript = ''
+    for segment in transcript_segments:
+        segment_start = segment.get('start', 0.0)
+        segment_end = segment.get('end', 0.0)
+        segment_text = segment.get('text', '')
 
-    for ad in ads:
-        ad_text = ad.get('text', '')
-        if ad_text:
-            # Normalize texts
-            transcript_text_norm = normalize_text(transcript_text)
-            ad_text_norm = normalize_text(ad_text)
+        is_ground_truth_ad = False
+        is_detected_ad = False
 
-            # Find the best match
-            match = re.search(re.escape(ad_text_norm), transcript_text_norm)
-            if match:
-                start_idx = match.start() + offset
-                end_idx = match.end() + offset
-                # Insert highlight tags
-                highlighted_transcript = (
-                        highlighted_transcript[:start_idx] +
-                        '<span class="ad-highlight">' +
-                        highlighted_transcript[start_idx:end_idx] +
-                        '</span>' +
-                        highlighted_transcript[end_idx:]
-                )
-                offset += len('<span class="ad-highlight"></span>')
-            else:
-                logger.warning(f"Ad text not found in transcript: '{ad_text}'")
+        # Check overlap with ground truth ads
+        for ad in ground_truth_ads:
+            ad_start = ad.get('start', 0.0)
+            ad_end = ad.get('end', 0.0)
+            if (segment_start < ad_end) and (segment_end > ad_start):
+                is_ground_truth_ad = True
+                break  # No need to check other ads
+
+        # Check overlap with detected ads
+        for ad in detected_ads:
+            ad_start = ad.get('start', 0.0)
+            ad_end = ad.get('end', 0.0)
+            if (segment_start < ad_end) and (segment_end > ad_start):
+                is_detected_ad = True
+                break  # No need to check other ads
+
+        # Assign CSS class based on the type of ad
+        if is_ground_truth_ad and is_detected_ad:
+            css_class = 'ad-highlight-both'
+            logger.debug(f"Segment [{segment_start}-{segment_end}] overlaps with both ground truth and detected ads.")
+        elif is_ground_truth_ad:
+            css_class = 'ad-highlight-ground-truth'
+            logger.debug(f"Segment [{segment_start}-{segment_end}] overlaps with ground truth ads.")
+        elif is_detected_ad:
+            css_class = 'ad-highlight-detected'
+            logger.debug(f"Segment [{segment_start}-{segment_end}] overlaps with detected ads.")
+        else:
+            css_class = ''
+
+        # Wrap the segment text with span and css class if necessary
+        if css_class:
+            highlighted_transcript += f'<span class="{css_class}">{segment_text}</span>'
+        else:
+            highlighted_transcript += segment_text
+
     return highlighted_transcript
 
 
 
-
-def generate_full_transcript_html(transcript_segments: List[Dict], ads: List[Dict], model_name: str, audio_file: str, run_dir: str):
+def generate_full_transcript_html(transcript_segments: List[Dict], ground_truth_ads: List[Dict], detected_ads: List[Dict], model_name: str, audio_file: str, run_dir: str):
     """
-    Generate and save an HTML file displaying the full transcript with detected ads highlighted.
+    Generate and save an HTML file displaying the full transcript with detected ads and ground truth ads highlighted.
     """
-    # Highlight detected ads in the transcript
-    transcript_html = highlight_ads(transcript_segments, ads)
+    # Highlight ads in the transcript
+    transcript_html = highlight_ads(transcript_segments, ground_truth_ads, detected_ads)
 
     # Create a Jinja2 environment pointing to the templates directory
     templates_dir = os.path.join(os.path.dirname(__file__), "templates")
@@ -128,6 +147,7 @@ def generate_full_transcript_html(transcript_segments: List[Dict], ads: List[Dic
         f.write(rendered_html)
 
     logger.info(f"Saved full transcript HTML to '{html_path}'.")
+
 
 def load_transcript_segments(model_name: str, audio_file: str) -> List[Dict]:
     """

@@ -111,10 +111,9 @@ def detect_ads(model_name: str, transcription_segments: List[Dict]) -> List[Dict
             break  # Exit on other exceptions
     return ads  # Return any ads detected before failure
 
-def detect_ads_for_model(model_name: str, run_dir: str) -> Dict[str, List[Dict]]:
+def detect_ads_for_model(llm_model_name: str, run_dir: str):
     """
     Detect advertisements in all transcriptions using a specific LLM model.
-    Returns a dictionary with audio file names as keys and lists of detected ads as values.
     """
     results = {}
     transcription_base_dir = TRANSCRIPTIONS_DIR  # This is the 'data/transcriptions' directory
@@ -137,10 +136,10 @@ def detect_ads_for_model(model_name: str, run_dir: str) -> Dict[str, List[Dict]]
                 logger.warning(f"Thread {thread_name}: Empty transcription segments for '{audio_file}'. Skipping ad detection.")
                 continue
             # Process the transcription segments using the LLM model
-            ads = detect_ads(model_name, transcription_segments)
+            ads = detect_ads(llm_model_name, transcription_segments)
             results[audio_file] = ads
-            # Save the detected ads
-            save_ad_detections(ads, model_name, audio_file, AD_DETECTIONS_DIR)
+            # Save the detected ads, including the whisper_model
+            save_ad_detections(ads, whisper_model, llm_model_name, audio_file, AD_DETECTIONS_DIR)
 
     return results
 

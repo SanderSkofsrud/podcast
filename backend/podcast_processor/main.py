@@ -1,5 +1,5 @@
 # podcast_processor/main.py
-
+import json
 import os
 import time
 import logging
@@ -17,7 +17,7 @@ from podcast_processor.config import (
     TRANSCRIPTIONS_DIR,
     GROUND_TRUTH_NO_ADS_DIR,
     GROUND_TRUTH_ADS_DIR,
-    TRANSCRIPT_DIR
+    TRANSCRIPT_DIR, LLM_MODELS, AD_DETECTIONS_DIR
 )
 from podcast_processor.transcription.transcribe import transcribe_all_models
 from podcast_processor.ad_detection.detect_ads import detect_ads_in_transcriptions
@@ -169,6 +169,9 @@ def main():
 
     audio_files = [f for f in os.listdir(AUDIO_DIR) if f.lower().endswith(SUPPORTED_EXTENSIONS)]
 
+    # Load ground truth ads once before the loop
+    ground_truth_ads = load_ground_truth_ads(GROUND_TRUTH_ADS_DIR)
+
     for model_name in WHISPER_MODELS:
         model_transcription_dir = os.path.join(TRANSCRIPTIONS_DIR, model_name)
         if not os.path.exists(model_transcription_dir):
@@ -201,13 +204,25 @@ def main():
                 logger.warning(f"No transcript segments found for '{audio_file}' with model '{model_name}'.")
                 continue
 
-            # Extract detected ads for this audio file and model
-            ads = ad_detections.get(model_name, {}).get(audio_file, [])
+            detected_ads = []
+            for llm_model in LLM_MODELS:
+                ad_detection_file = os.path.splitext(audio_file)[0] + "_ads.json"
+                ad_detection_path = os.path.join(AD_DETECTIONS_DIR, model_name, llm_model, ad_detection_file)
+                if os.path.exists(ad_detection_path):
+                    with open(ad_detection_path, 'r', encoding='utf-8') as f:
+                        ads = json.load(f)
+                        detected_ads.extend(ads)
+                else:
+                    logger.warning(f"Ad detection file '{ad_detection_path}' not found.")
+
+            # Load ground truth ads for this audio file
+            ground_truth_ads_list = ground_truth_ads.get(audio_file, [])
 
             # Generate Full Transcript HTML with ads highlighted
             generate_full_transcript_html(
                 transcript_segments=transcript_segments,
-                ads=ads,
+                ground_truth_ads=ground_truth_ads_list,
+                detected_ads=detected_ads,
                 model_name=model_name,
                 audio_file=audio_file,
                 run_dir=run_dir

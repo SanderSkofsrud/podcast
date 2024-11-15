@@ -19,9 +19,14 @@
         .transcript {
             font-size: 16px;
         }
-        .ad-highlight {
-            background-color: #90ee90; /* Light green */
-            font-weight: bold;
+        .ad-highlight-ground-truth {
+            background-color: #ffcccc; /* Light red for ground truth ads */
+        }
+        .ad-highlight-detected {
+            background-color: #ccffcc; /* Light green for detected ads */
+        }
+        .ad-highlight-both {
+            background-color: #ccccff; /* Light blue for overlapping ads */
         }
         .legend {
             margin-top: 20px;
@@ -31,7 +36,6 @@
             width: 20px;
             height: 20px;
             margin-right: 5px;
-            background-color: #90ee90;
         }
     </style>
 </head>
@@ -42,7 +46,9 @@
 </div>
 <div class="legend">
     <h3>Legend:</h3>
-    <p><span class="ad-highlight"></span> Detected Advertisement</p>
+    <p><span class="ad-highlight-ground-truth"></span> Ground Truth Advertisement</p>
+    <p><span class="ad-highlight-detected"></span> Detected Advertisement</p>
+    <p><span class="ad-highlight-both"></span> Correctly Detected Advertisement</p>
 </div>
 </body>
 </html>

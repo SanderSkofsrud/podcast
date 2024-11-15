@@ -53,40 +53,38 @@ def save_transcription_results(aggregated: dict, run_dir: str):
     except Exception as e:
         logger.error(f"Error saving transcription results: {e}")
 
-def evaluate_ad_detection(detections: Dict[str, Dict[str, List[Dict]]],
-                          ground_truth_ads: Dict[str, List[Dict]]) -> Dict[str, Dict[str, float]]:
+def ads_overlap(ad1, ad2, threshold=0.5):
+    latest_start = max(ad1['start'], ad2['start'])
+    earliest_end = min(ad1['end'], ad2['end'])
+    overlap = max(0, earliest_end - latest_start)
+    duration = min(ad1['end'] - ad1['start'], ad2['end'] - ad2['start'])
+    return (overlap / duration) >= threshold if duration > 0 else False
+
+def evaluate_ad_detection(detections, ground_truth_ads):
     metrics = {}
     for model_name, model_detections in detections.items():
-        tp = 0  # True Positives
-        fp = 0  # False Positives
-        fn = 0  # False Negatives
+        tp = fp = fn = 0
         for audio_file, detected_ads in model_detections.items():
-            ground_truth = ground_truth_ads.get(audio_file, [])
-            detected_texts = [normalize_text(ad['text']) for ad in detected_ads]
-            ground_truth_texts = [normalize_text(ad['text']) for ad in ground_truth]
-            detected_texts_copy = detected_texts.copy()
-            for gt_text in ground_truth_texts:
+            gt_ads = ground_truth_ads.get(audio_file, [])
+            matched_ads = set()
+            for gt_ad in gt_ads:
                 match_found = False
-                for det_text in detected_texts_copy:
-                    similarity = fuzz.ratio(gt_text, det_text)
-                    if similarity >= 80:
+                for det_ad in detected_ads:
+                    if ads_overlap(gt_ad, det_ad):
                         tp += 1
-                        detected_texts_copy.remove(det_text)  # Avoid duplicate counting
                         match_found = True
+                        matched_ads.add(id(det_ad))
                         break
                 if not match_found:
                     fn += 1
-            fp += len(detected_texts_copy)
+            fp += len(detected_ads) - len(matched_ads)
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-        f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
-        metrics[model_name] = {
-            'precision': precision,
-            'recall': recall,
-            'f1_score': f1_score
-        }
-        logger.info(f"Ad Detection Metrics for '{model_name}': Precision={precision}, Recall={recall}, F1 Score={f1_score}")
+        f1_score = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+        metrics[model_name] = {'precision': precision, 'recall': recall, 'f1_score': f1_score}
+        logger.info(f"Ad Detection Metrics for '{model_name}': Precision={precision:.2f}, Recall={recall:.2f}, F1 Score={f1_score:.2f}")
     return metrics
+
 
 
 def evaluate_processed_transcriptions(processed_transcriptions: Dict[str, Dict[str, str]], ground_truth_no_ads_dir: str) -> Dict[str, Dict[str, float]]:
