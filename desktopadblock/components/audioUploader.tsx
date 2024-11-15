@@ -1,96 +1,83 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-const AudioUploader: React.FC = () => {
-    const [file, setFile] = useState<File | null>(null);
-    const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [status, setStatus] = useState<string | null>(null);
-    const [requestId, setRequestId] = useState<string | null>(null);
+interface AudioUploaderProps {
+  onFileSelected: (file: File | null) => void;
+  file: File | null;
+}
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFile(event.target.files ? event.target.files[0] : null);
-        setDownloadUrl(null);
-        setStatus(null);
-        setRequestId(null);
-    };
+const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileSelected, file }) => {
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-    const handleUpload = async () => {
-        if (!file) return;
-        setLoading(true);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files ? event.target.files[0] : null;
+    onFileSelected(selectedFile);
+    setDownloadUrl(null);
+  };
 
-        const formData = new FormData();
-        formData.append('audio', file);
+  const handleUpload = async () => {
+    if (!file) return;
+    setLoading(true);
 
-        try {
-            const response = await fetch('http://localhost:5001/process_audio', {
-                method: 'POST',
-                body: formData,
-            });
+    const formData = new FormData();
+    formData.append('audio', file);
 
-            console.log(response);  // Log response for debugging
+    try {
+      const response = await fetch('http://localhost:5001/process_audio', {
+        method: 'POST',
+        body: formData,
+      });
 
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                setDownloadUrl(url);
-            } else {
-                alert('Failed to process audio');
-            }
-        } catch (error) {
-            console.error('Error uploading file:', error);
-            alert('An error occurred while uploading the file.');
-        } finally {
-            setLoading(false);
-        }
-    };
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        setDownloadUrl(url);
+      } else {
+        alert('Failed to process audio');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('An error occurred while uploading the file.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  return (
+    <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold text-gray-800 mb-5">Upload file to remove ads</h2>
+      <input
+        type="file"
+        accept="audio/*"
+        onChange={handleFileChange}
+        className="block w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+      />
+      <button
+        onClick={handleUpload}
+        disabled={!file || loading}
+        className={`mt-5 w-full py-3 text-white font-semibold rounded-lg transition ${
+          !file || loading
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-purple-600 hover:bg-purple-700 shadow-md'
+        }`}
+      >
+        {loading ? 'Working...' : 'Upload'}
+      </button>
 
-    const pollStatus = (id: string) => {
-        const interval = setInterval(async () => {
-            try {
-                const res = await fetch(`http://localhost:5001/status/${id}`);
-                const data = await res.json();
-                setStatus(data.status);
-
-                if (data.status === "Completed" && requestId) {
-                    const response = await fetch(`http://localhost:5001/download/${requestId}`);
-                    if (response.ok) {
-                        const blob = await response.blob();
-                        const url = window.URL.createObjectURL(blob);
-                        setDownloadUrl(url);
-                        clearInterval(interval); // Stop polling when completed
-                    }
-                } else if (data.status === "Error") {
-                    alert("An error occurred during processing.");
-                    clearInterval(interval);
-                }
-            } catch (error) {
-                console.error('Error checking status:', error);
-                clearInterval(interval);
-            }
-        }, 2000); // Poll every 2 seconds
-    };
-
-    return (
-        <div style={{ padding: '20px', maxWidth: '400px', margin: 'auto' }}>
-            <h2>Upload Audio for Ad Removal</h2>
-            <input type="file" accept="audio/*" onChange={handleFileChange} />
-            <button onClick={handleUpload} disabled={!file || loading} style={{ marginTop: '10px' }}>
-                {loading ? 'Processing...' : 'Upload and Process'}
-            </button>
-
-            {status && <p>Status: {status}</p>}
-
-            {downloadUrl && (
-                <div style={{ marginTop: '20px' }}>
-                    <a href={downloadUrl} download="edited_audio.mp3">
-                        Download Processed Audio
-                    </a>
-                </div>
-            )}
+      {downloadUrl && (
+        <div className="mt-6">
+          <a
+            href={downloadUrl}
+            download="edited_audio.mp3"
+            className="inline-block px-4 py-2 bg-purple-100 text-purple-700 rounded-lg font-medium hover:bg-purple-200 transition"
+          >
+            Remove ads
+          </a>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default AudioUploader;
