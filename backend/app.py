@@ -1,5 +1,5 @@
 from flask import Flask, request, send_file, after_this_request, jsonify
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS
 from transcriber import transcribe_audio
 from classifier import classify_texts
 from audio_editor import remove_ad_segments
@@ -20,6 +20,13 @@ status_dict = {}
 def process_audio():
     logger.info("Received audio processing request.")
 
+    # Extract the mode from the request; default to 'speed'
+    mode = request.form.get('mode', 'speed').lower()
+    if mode not in ['speed', 'accurate']:
+        return jsonify({"error": "Invalid mode. Choose 'speed' or 'accurate'."}), 400
+
+    logger.info(f"Processing mode: {mode}")
+
     # Generate a unique request ID and save the uploaded audio file with a unique filename
     unique_id = str(uuid.uuid4())
     status_dict[unique_id] = "Received audio processing request"
@@ -29,9 +36,9 @@ def process_audio():
     logger.info(f"Saved audio file to {audio_filename}.")
 
     try:
-        # Transcribe audio
+        # Transcribe audio with the specified mode
         status_dict[unique_id] = "Transcribing audio"
-        transcription, segments = transcribe_audio(audio_filename)
+        transcription, segments = transcribe_audio(audio_filename, mode=mode)
         logger.info("Transcription completed.")
 
         # Classify segments in batch
@@ -80,7 +87,7 @@ def process_audio():
     except Exception as e:
         logger.error(f"Error processing audio: {e}")
         status_dict[unique_id] = "Error"
-        return "Error processing audio.", 500
+        return jsonify({"error": "Error processing audio."}), 500
 
 @app.route('/status/<request_id>', methods=['GET'])
 def get_status(request_id):

@@ -1,5 +1,3 @@
-# transcriber.py
-
 import whisper
 import logging
 import warnings
@@ -18,18 +16,31 @@ warnings.filterwarnings(
 device = "cuda" if torch.cuda.is_available() else "cpu"
 logger.info(f"Using device: {device}")
 
-# Load the smaller Whisper model once to avoid reloading each time
-model = whisper.load_model("tiny", device=device)
+# Load the Whisper models once to avoid reloading each time
+logger.info("Loading Whisper models...")
+model_tiny = whisper.load_model("tiny", device=device)
+model_small = whisper.load_model("small", device=device)
+logger.info("Whisper models loaded.")
 
-def transcribe_audio(audio_path):
+def transcribe_audio(audio_path, mode='speed'):
     try:
-        logger.info(f"Transcribing audio file {audio_path} using Whisper model.")
+        if mode == 'speed':
+            model = model_tiny
+            logger.info(f"Using 'tiny' Whisper model for transcription.")
+        elif mode == 'accurate':
+            model = model_small
+            logger.info(f"Using 'small' Whisper model for transcription.")
+        else:
+            logger.error(f"Invalid mode '{mode}' provided to transcribe_audio.")
+            raise ValueError("Invalid mode. Choose 'speed' or 'accurate'.")
+
+        logger.info(f"Transcribing audio file {audio_path} using Whisper model ({mode}).")
 
         # Transcribe the audio file with options to speed up transcription
         result = model.transcribe(
             audio_path,
             verbose=False,
-            fp16=device == "cuda",  # Use FP16 if running on GPU
+            fp16=(device == "cuda"),  # Use FP16 if running on GPU
             condition_on_previous_text=False,
             temperature=0.0,
             without_timestamps=False,
