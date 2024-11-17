@@ -2,7 +2,7 @@
 
 "use client";
 import React, { useState } from 'react';
-import AudioUploader from "@/components/audioUploader"; // Corrected casing
+import AudioUploader from "@/components/audioUploader";
 import ToggleSwitch from "@/components/ToggleSwitch";
 
 const Home: React.FC = () => {
@@ -31,7 +31,7 @@ const Home: React.FC = () => {
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
       const droppedFile = files[0];
-      setFile(droppedFile); // Update the file state in Home
+      setFile(droppedFile);
     }
   };
 
@@ -41,8 +41,6 @@ const Home: React.FC = () => {
 
   const handleToggle = (selectedMode: 'fast' | 'accurate') => {
     setMode(selectedMode);
-    // Implement additional logic based on the selected mode
-    console.log(`Selected Mode: ${selectedMode}`);
   };
 
   return (

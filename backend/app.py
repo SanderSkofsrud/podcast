@@ -1,62 +1,56 @@
+# app.py
+
 from flask import Flask, request, send_file, after_this_request, jsonify
 from flask_cors import CORS
 from transcriber import transcribe_audio
-from classifier import classify_texts
+from ad_detector import detect_ad_segments
 from audio_editor import remove_ad_segments
 import os
 import logging
 import uuid
-import json
 from io import BytesIO
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+#This CORS could be reduced to lesser access.
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 status_dict = {}
 
 @app.route('/process_audio', methods=['POST'])
 def process_audio():
     logger.info("Received audio processing request.")
 
-    # Extract the mode from the request; default to 'speed'
     mode = request.form.get('mode', 'fast').lower()
     if mode not in ['fast', 'accurate']:
         return jsonify({"error": "Invalid mode. Choose 'fast' or 'accurate'."}), 400
 
     logger.info(f"Processing mode: {mode}")
 
-    # Generate a unique request ID and save the uploaded audio file with a unique filename
     unique_id = str(uuid.uuid4())
     status_dict[unique_id] = "Received audio processing request"
-    audio_file = request.files['audio']
+    audio_file = request.files.get('audio')
+    if not audio_file:
+        return jsonify({"error": "No audio file provided."}), 400
     audio_filename = f"temp_audio_{unique_id}.mp3"
     audio_file.save(audio_filename)
     logger.info(f"Saved audio file to {audio_filename}.")
 
     try:
-        # Transcribe audio with the specified mode
         status_dict[unique_id] = "Transcribing audio"
         transcription, segments = transcribe_audio(audio_filename, mode=mode)
         logger.info("Transcription completed.")
 
-        # Classify segments in batch
-        status_dict[unique_id] = "Classifying segments"
-        texts = [segment['text'] for segment in segments]
-        labels = classify_texts(texts)
-        ad_segments = []
-        for segment, label in zip(segments, labels):
-            if label == 'advertisement':
-                ad_segments.append({'start': segment['start'], 'end': segment['end']})
-        logger.info("Batch classification completed.")
+        status_dict[unique_id] = "Detecting advertisement segments"
+        ad_segments = detect_ad_segments(transcription)
+        logger.info(f"Identified {len(ad_segments)} advertisement segments.")
+        logger.debug(f"Advertisement segments: {ad_segments}")  # Optional detailed log
 
-        # Remove ad segments
         status_dict[unique_id] = "Removing advertisement segments"
         edited_audio_filename = remove_ad_segments(audio_filename, ad_segments)
         logger.info(f"Audio editing completed. Edited file saved to {edited_audio_filename}.")
 
-        # Update status to completed
         status_dict[unique_id] = "Completed"
 
         @after_this_request

@@ -5,10 +5,10 @@ import time
 import openai
 import json
 from config.settings import client
+import re
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
 
 def detect_ad_segments(transcription):
 
@@ -27,7 +27,7 @@ def detect_ad_segments(transcription):
                 "        \"end\": 70.04\n"
                 "    }\n"
                 "]\n"
-                "Only include advertisement segments. Do not include any additional text."
+                "Only include advertisement segments. Do not include any additional text or Markdown formatting."
             )
         }
     ]
@@ -42,6 +42,7 @@ def detect_ad_segments(transcription):
     max_retries = 5
     retry_delay = 1
 
+# This handles the OpenAI gpt responses.
     for attempt in range(max_retries):
         try:
             response = client.chat.completions.create(
@@ -49,10 +50,18 @@ def detect_ad_segments(transcription):
                 messages=messages,
                 temperature=0.0
             )
-
             content = response.choices[0].message.content.strip()
 
             logger.info(f"Assistant's response:\n{content}")
+
+            json_match = re.search(r'```json\s*([\s\S]*?)\s*```', content)
+            if json_match:
+                content = json_match.group(1).strip()
+                logger.info("Removed Markdown code block from the response.")
+
+            else:
+                content = re.sub(r'^```.*\n', '', content)
+                content = re.sub(r'\n```$', '', content).strip()
 
             ad_segments = json.loads(content)
 
@@ -66,6 +75,8 @@ def detect_ad_segments(transcription):
 
         except json.JSONDecodeError as jde:
             logger.error(f"JSON decode error: {jde}. Response was: {content}")
+
+            time.sleep(retry_delay)
         except openai.error.RateLimitError as e:
             logger.warning(f"Rate limit exceeded. Retrying in {retry_delay} seconds...")
             time.sleep(retry_delay)

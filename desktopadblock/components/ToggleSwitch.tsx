@@ -22,7 +22,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ mode, onToggle }) => {
           mode === 'fast' ? 'font-bold text-blue-600' : ''
         }`}
       >
-        Fast Mode
+        Fast
       </span>
       <label htmlFor="modeToggle" className="relative inline-flex items-center cursor-pointer">
         <input
@@ -44,7 +44,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ mode, onToggle }) => {
           mode === 'accurate' ? 'font-bold text-blue-600' : ''
         }`}
       >
-        Accurate Mode
+        Accurate
       </span>
     </div>
   );

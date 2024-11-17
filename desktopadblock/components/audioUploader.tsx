@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 interface AudioUploaderProps {
   onFileSelected: (file: File | null) => void;
   file: File | null;
-  mode: 'fast' | 'accurate'; // New prop
+  mode: 'fast' | 'accurate';
 }
 
 const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileSelected, file, mode }) => {
@@ -25,7 +25,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileSelected, file, mod
 
     const formData = new FormData();
     formData.append('audio', file);
-    formData.append('mode', mode); // Append the mode
+    formData.append('mode', mode);
 
     try {
       const response = await fetch('http://localhost:5001/process_audio', {
@@ -76,7 +76,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileSelected, file, mod
       </button>
 
       <p className="mt-2 text-gray-500">
-        Processing Mode: <span className="font-medium capitalize">{mode} Mode</span>
+        Processing Mode: <span className="font-medium capitalize">{mode}</span>
       </p>
 
       {downloadUrl && (
