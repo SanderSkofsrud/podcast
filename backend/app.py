@@ -21,9 +21,9 @@ def process_audio():
     logger.info("Received audio processing request.")
 
     # Extract the mode from the request; default to 'speed'
-    mode = request.form.get('mode', 'speed').lower()
-    if mode not in ['speed', 'accurate']:
-        return jsonify({"error": "Invalid mode. Choose 'speed' or 'accurate'."}), 400
+    mode = request.form.get('mode', 'fast').lower()
+    if mode not in ['fast', 'accurate']:
+        return jsonify({"error": "Invalid mode. Choose 'fast' or 'accurate'."}), 400
 
     logger.info(f"Processing mode: {mode}")
 

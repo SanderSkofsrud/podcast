@@ -22,9 +22,9 @@ model_tiny = whisper.load_model("tiny", device=device)
 model_small = whisper.load_model("small", device=device)
 logger.info("Whisper models loaded.")
 
-def transcribe_audio(audio_path, mode='speed'):
+def transcribe_audio(audio_path, mode='fast'):
     try:
-        if mode == 'speed':
+        if mode == 'fast':
             model = model_tiny
             logger.info(f"Using 'tiny' Whisper model for transcription.")
         elif mode == 'accurate':
@@ -32,7 +32,7 @@ def transcribe_audio(audio_path, mode='speed'):
             logger.info(f"Using 'small' Whisper model for transcription.")
         else:
             logger.error(f"Invalid mode '{mode}' provided to transcribe_audio.")
-            raise ValueError("Invalid mode. Choose 'speed' or 'accurate'.")
+            raise ValueError("Invalid mode. Choose 'fast' or 'accurate'.")
 
         logger.info(f"Transcribing audio file {audio_path} using Whisper model ({mode}).")
 
