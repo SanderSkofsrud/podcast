@@ -62,7 +62,7 @@ def classify_texts(texts):
                 logger.error(f"Mismatch in number of classifications. Expected {len(texts)}, got {len(labels)}")
                 labels = ['content'] * len(texts)  # Default to content
                 break
-        except openai.error.RateLimitError as e:
+        except openai.RateLimitError as e:
             logger.warning(f"Rate limit exceeded. Retrying in {retry_delay} seconds...")
             time.sleep(retry_delay)
             retry_delay *= 2  # Exponential backoff
