@@ -4,17 +4,4 @@ from openai import OpenAI
 
 load_dotenv()
 
-
-
-# Sett opp klienten
 client = OpenAI()
-
-
-
-
-
-
-
-
-
-

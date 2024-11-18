@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  podcast_processor:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: poetry run python podcast_processor/main.py
+
+  legacy_llm:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: poetry run python legacy/llm/main.py
+
+  legacy_transcription:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: poetry run python legacy/transcription/main.py

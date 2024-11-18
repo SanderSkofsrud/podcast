@@ -100,7 +100,7 @@ make all
 
 You can also set up individual components:
 ```sh
-make setup-backend
+make setup-Pipeline
 make setup-proxy
 make setup-mitmproxy
 ```
@@ -108,7 +108,7 @@ make setup-mitmproxy
 #### Run Individual Components
 
 ```sh
-make run-backend
+make run-Pipeline
 make run-proxy
 make run-extension
 ```
@@ -145,7 +145,7 @@ If you prefer not to use the Makefile, you can set up the backend manually:
 
 1. **Navigate to the `backend` directory**:
    ```sh
-   cd backend
+   cd Pipeline
    ```
 
 2. **Install dependencies using Poetry**:
@@ -235,7 +235,7 @@ To run the entire system end-to-end, follow these steps:
 
 1. **Start the backend**:
    ```sh
-   cd backend
+   cd Pipeline
    poetry run python app.py
    ```
 
