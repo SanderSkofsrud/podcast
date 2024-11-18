@@ -167,18 +167,33 @@ def load_transcript_segments(model_name: str, audio_file: str) -> List[Dict]:
         segments = json.load(f)
     return segments
 
-def generate_summary_report(aggregated: dict, aggregated_ad_detections: Dict[str, List[Dict]], ad_detection_metrics: Dict[str, Dict[str, float]], processed_transcription_metrics: Dict[str, Dict[str, float]], run_dir: str):
+def generate_summary_report(
+        aggregated: dict,
+        aggregated_ad_detections: Dict[str, List[Dict]],
+        ad_detection_metrics: Dict[str, Dict[str, float]],
+        processed_transcription_metrics: Dict[str, Dict[str, float]],
+        run_dir: str
+):
     """
     Generate a summary HTML report linking all visualizations, transcription diffs, and full transcripts with ad highlights.
     """
-    # Generate the list of model combinations
+    # Generate the list of model combinations as dictionaries
     model_combinations = []
     for whisper_model in WHISPER_MODELS:
         for llm_model_name in LLM_MODELS:
-            model_combinations.append(f"{whisper_model}_{llm_model_name}")
+            model_name = f"{whisper_model}_{llm_model_name}"
+            model_combinations.append({
+                'whisper_model': whisper_model,
+                'llm_model_name': llm_model_name,
+                'model_name': model_name
+            })
 
-    # Collect all audio files
-    audio_files = [os.path.splitext(f)[0] for f in os.listdir(AUDIO_DIR) if f.lower().endswith(SUPPORTED_EXTENSIONS)]
+    # Collect all audio files (without extensions)
+    audio_files = [
+        os.path.splitext(f)[0]
+        for f in os.listdir(AUDIO_DIR)
+        if f.lower().endswith(SUPPORTED_EXTENSIONS)
+    ]
 
     # Create a Jinja2 environment pointing to the templates directory
     templates_dir = os.path.join(os.path.dirname(__file__), "templates")

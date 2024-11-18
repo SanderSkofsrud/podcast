@@ -95,9 +95,18 @@ def evaluate_ad_detection(aggregated_ad_detections, ground_truth_ads, processing
             for audio_file, detected_ads in model_detections.items():
                 gt_ads = ground_truth_ads.get(audio_file, [])
                 logger.debug(f"Audio File: {audio_file} | Ground Truth Ads: {len(gt_ads)} | Detected Ads: {len(detected_ads)}")
+                logger.debug(f"Ground Truth Ads for '{audio_file}': {gt_ads}")
+                logger.debug(f"Detected Ads for '{audio_file}': {detected_ads}")
 
                 # Keep track of which ground truth ads have been matched
                 gt_matched = [False] * len(gt_ads)
+
+                # Initialize counts per audio file
+                tp_audio = 0
+                fp_audio = 0
+                fn_audio = 0
+                y_true_audio = []
+                y_pred_audio = []
 
                 for det_idx, det_ad in enumerate(detected_ads):
                     det_start = det_ad['start']
@@ -126,31 +135,38 @@ def evaluate_ad_detection(aggregated_ad_detections, ground_truth_ads, processing
                         similarity = fuzz.token_set_ratio(det_ad['text'], gt_ad['text'])
                         if similarity >= 80:
                             # True Positive
-                            tp += 1
+                            tp_audio += 1
                             gt_matched[best_gt_idx] = True
-                            y_true.append(1)
-                            y_pred.append(1)
+                            y_true_audio.append(1)
+                            y_pred_audio.append(1)
                             logger.debug(f"TP: Detected Ad {det_idx+1} matches GT Ad {best_gt_idx+1} with overlap ratio {best_overlap_ratio:.2f} and similarity {similarity}.")
                         else:
                             # False Positive due to low text similarity
-                            fp += 1
-                            y_true.append(0)
-                            y_pred.append(1)
+                            fp_audio += 1
+                            y_true_audio.append(0)
+                            y_pred_audio.append(1)
                             logger.debug(f"FP: Detected Ad {det_idx+1} overlaps but has low text similarity ({similarity}).")
                     else:
                         # False Positive
-                        fp += 1
-                        y_true.append(0)
-                        y_pred.append(1)
+                        fp_audio += 1
+                        y_true_audio.append(0)
+                        y_pred_audio.append(1)
                         logger.debug(f"FP: Detected Ad {det_idx+1} does not match any GT Ad (Best overlap ratio {best_overlap_ratio:.2f})")
 
                 # Any unmatched ground truth ads are False Negatives
                 for idx, matched in enumerate(gt_matched):
                     if not matched:
-                        fn += 1
-                        y_true.append(1)
-                        y_pred.append(0)
+                        fn_audio += 1
+                        y_true_audio.append(1)
+                        y_pred_audio.append(0)
                         logger.debug(f"FN: GT Ad {idx+1} was not detected.")
+
+                # Update totals
+                tp += tp_audio
+                fp += fp_audio
+                fn += fn_audio
+                y_true.extend(y_true_audio)
+                y_pred.extend(y_pred_audio)
 
             # Calculate metrics
             precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0

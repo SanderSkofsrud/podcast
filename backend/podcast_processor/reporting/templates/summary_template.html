@@ -108,26 +108,18 @@
         <li><img src="processed_transcription_wer.png" alt="Processed Transcription WER"></li>
     </ul>
 </div>
-<div class="section">
-    <h2>Price-Based Analysis</h2>
-    <p>The following plots illustrate the relationship between the cost of each LLM model and its performance metrics:</p>
-    <ul>
-        <li><img src="price_vs_ad_detection_accuracy.png" alt="Price vs. Ad Detection Accuracy"></li>
-        <li><img src="price_vs_time_usage.png" alt="Price vs. Time Usage"></li>
-    </ul>
-</div>
 <div class="transcript">
     <h2>Transcription Differences</h2>
     <p>Click on a model to view the transcription differences and full transcripts with advertisements highlighted for each audio file:</p>
     <ul class="transcript-mini">
         {% for model in model_combinations %}
         <li>
-            <strong>{{ model }}</strong>
+            <strong>{{ model.model_name }}</strong>
             <ul>
                 {% for audio_file in audio_files %}
                 <li>
-                    <a href="transcription_diffs/{{ model }}/{{ audio_file }}.html">Differences for {{ audio_file }}</a><br>
-                    <a href="full_transcripts/{{ model }}/{{ audio_file }}.html">Full Transcript with Ads</a>
+                    <a href="transcription_diffs/{{ model.whisper_model }}/{{ audio_file }}.html">Differences for {{ audio_file }}</a><br>
+                    <a href="full_transcripts/{{ model.model_name }}/{{ audio_file }}.html">Full Transcript with Ads</a>
                 </li>
                 {% endfor %}
             </ul>

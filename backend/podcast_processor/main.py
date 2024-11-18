@@ -184,7 +184,7 @@ def main():
         processed_transcriptions, GROUND_TRUTH_NO_ADS_DIR
     )
 
-# Debugging: Log processed_transcription_metrics
+    # Debugging: Log processed_transcription_metrics
     logger.debug(f"Processed Transcription Metrics: {json.dumps(processed_transcription_metrics, indent=2)}")
 
     # Step 7: Generate plots based on the aggregated results and ad detections

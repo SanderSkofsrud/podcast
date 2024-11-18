@@ -8,14 +8,15 @@ import torch
 # ---------------------------
 
 # Define Whisper model sizes to evaluate
-# WHISPER_MODELS = ["tiny", "small", "large"]
-WHISPER_MODELS = ["tiny"]
+WHISPER_MODELS = ["tiny", "small", "large"]
+# WHISPER_MODELS = ["large"]
 # WHISPER_MODELS = ["tiny", "small"]
 
 # Define LLM models for ad detection as a list of model names
-LLM_MODELS = ["gpt-4o-mini"]
+# LLM_MODELS = ["gpt-4o-mini"]
+# LLM_MODELS = ["gpt-4o"]
 # LLM_MODELS = ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"]
-# LLM_MODELS = ["gpt-4o-mini", "gpt-4o"]
+LLM_MODELS = ["gpt-4o-mini", "gpt-4o"]
 
 # Define properties for each LLM model
 LLM_MODEL_CONFIGS = {

@@ -1,0 +1,626 @@
+<!-- podcast_processor/reporting/templates/summary_template.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Model Evaluation Summary - D:\Skole\podcast\backend\podcast_processor\results\plots\run_60</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { text-align: left; }
+        .section { margin-bottom: 40px; }
+        .section img { max-width: 100%; height: auto; }
+        .transcript-link { margin-right: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }
+        th { background-color: #f2f2f2; }
+        .ad-highlight { background-color: yellow; }
+
+        ul {
+            list-style-type: none;
+            background: #e1e1e1;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .transcript ul {
+            list-style-type: none;
+            background: #e1e1e1;
+            border-radius: 10px;
+            padding: 1rem; /* Add padding inside the container */
+            display: flex;
+            flex-direction: column; /* Makes the items stack vertically */
+            gap: 1rem; /* Adds spacing between the items */
+        }
+
+        .transcript-mini ul {
+            list-style-type: none;
+            background: #e1e1e1;
+            border-radius: 10px;
+            padding: 1rem; /* Add padding inside the container */
+            display: flex; /* Change to flexbox */
+            flex-direction: row; /* Align items horizontally */
+            gap: 1rem; /* Adds spacing between the items */
+        }
+
+        .transcript-mini ul li {
+            padding: 10px;
+            background: #ececec;
+            border-radius: 10px;
+        }
+
+        .transcript li {
+            padding: 10px;
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .ad-detection ul li {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #dddddd;
+        }
+
+        strong {
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        li a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        li a:hover {
+            text-decoration: underline;
+        }
+
+        li a:visited {
+            color: #333;
+        }
+
+        li a:active {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<h1>Model Evaluation Summary</h1>
+<div class="section">
+    <h2>Aggregate Metrics</h2>
+    <p>Average Speed and Accuracy for each model are visualized in the following plots:</p>
+    <ul>
+        <li><img src="whisper_models_speed_vs_accuracy.png" alt="Speed vs. Accuracy Scatter Plot"></li>
+        <li><img src="ad_detections_per_model.png" alt="Advertisements Detected per Model"></li>
+        <li><img src="ad_detection_metrics.png" alt="Ad Detection Metrics"></li>
+        <li><img src="processed_transcription_wer.png" alt="Processed Transcription WER"></li>
+    </ul>
+</div>
+<div class="section">
+    <h2>Price-Based Analysis</h2>
+    <p>The following plots illustrate the relationship between the cost of each LLM model and its performance metrics:</p>
+    <ul>
+        <li><img src="price_vs_ad_detection_accuracy.png" alt="Price vs. Ad Detection Accuracy"></li>
+        <li><img src="price_vs_time_usage.png" alt="Price vs. Time Usage"></li>
+    </ul>
+</div>
+<div class="transcript">
+    <h2>Transcription Differences</h2>
+    <p>Click on a model to view the transcription differences and full transcripts with advertisements highlighted for each audio file:</p>
+    <ul class="transcript-mini">
+        
+        <li>
+            <strong>tiny_gpt-4o-mini</strong>
+            <ul>
+                
+                <li>
+                    <a href="transcription_diffs/tiny/GRC978.html">Differences for GRC978</a><br>
+                    <a href="full_transcripts/tiny_gpt-4o-mini/GRC978.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/tiny/NYT.html">Differences for NYT</a><br>
+                    <a href="full_transcripts/tiny_gpt-4o-mini/NYT.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/tiny/pricessdiana.html">Differences for pricessdiana</a><br>
+                    <a href="full_transcripts/tiny_gpt-4o-mini/pricessdiana.html">Full Transcript with Ads</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <strong>tiny_gpt-4o</strong>
+            <ul>
+                
+                <li>
+                    <a href="transcription_diffs/tiny/GRC978.html">Differences for GRC978</a><br>
+                    <a href="full_transcripts/tiny_gpt-4o/GRC978.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/tiny/NYT.html">Differences for NYT</a><br>
+                    <a href="full_transcripts/tiny_gpt-4o/NYT.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/tiny/pricessdiana.html">Differences for pricessdiana</a><br>
+                    <a href="full_transcripts/tiny_gpt-4o/pricessdiana.html">Full Transcript with Ads</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <strong>small_gpt-4o-mini</strong>
+            <ul>
+                
+                <li>
+                    <a href="transcription_diffs/small/GRC978.html">Differences for GRC978</a><br>
+                    <a href="full_transcripts/small_gpt-4o-mini/GRC978.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/small/NYT.html">Differences for NYT</a><br>
+                    <a href="full_transcripts/small_gpt-4o-mini/NYT.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/small/pricessdiana.html">Differences for pricessdiana</a><br>
+                    <a href="full_transcripts/small_gpt-4o-mini/pricessdiana.html">Full Transcript with Ads</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <strong>small_gpt-4o</strong>
+            <ul>
+                
+                <li>
+                    <a href="transcription_diffs/small/GRC978.html">Differences for GRC978</a><br>
+                    <a href="full_transcripts/small_gpt-4o/GRC978.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/small/NYT.html">Differences for NYT</a><br>
+                    <a href="full_transcripts/small_gpt-4o/NYT.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/small/pricessdiana.html">Differences for pricessdiana</a><br>
+                    <a href="full_transcripts/small_gpt-4o/pricessdiana.html">Full Transcript with Ads</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <strong>large_gpt-4o-mini</strong>
+            <ul>
+                
+                <li>
+                    <a href="transcription_diffs/large/GRC978.html">Differences for GRC978</a><br>
+                    <a href="full_transcripts/large_gpt-4o-mini/GRC978.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/large/NYT.html">Differences for NYT</a><br>
+                    <a href="full_transcripts/large_gpt-4o-mini/NYT.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/large/pricessdiana.html">Differences for pricessdiana</a><br>
+                    <a href="full_transcripts/large_gpt-4o-mini/pricessdiana.html">Full Transcript with Ads</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <strong>large_gpt-4o</strong>
+            <ul>
+                
+                <li>
+                    <a href="transcription_diffs/large/GRC978.html">Differences for GRC978</a><br>
+                    <a href="full_transcripts/large_gpt-4o/GRC978.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/large/NYT.html">Differences for NYT</a><br>
+                    <a href="full_transcripts/large_gpt-4o/NYT.html">Full Transcript with Ads</a>
+                </li>
+                
+                <li>
+                    <a href="transcription_diffs/large/pricessdiana.html">Differences for pricessdiana</a><br>
+                    <a href="full_transcripts/large_gpt-4o/pricessdiana.html">Full Transcript with Ads</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+    </ul>
+</div>
+<div class="section">
+    <h2>Advertisement Detection Metrics</h2>
+    <table>
+        <tr>
+            <th>Model</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1 Score</th>
+            <th>Processing Time (s)</th>
+        </tr>
+        
+        <tr>
+            <td>tiny_gpt-4o-mini</td>
+            <td>0.67</td>
+            <td>0.67</td>
+            <td>0.67</td>
+            <td>73.33</td>
+        </tr>
+        
+        <tr>
+            <td>tiny_gpt-4o</td>
+            <td>0.62</td>
+            <td>0.83</td>
+            <td>0.71</td>
+            <td>429.87</td>
+        </tr>
+        
+        <tr>
+            <td>small_gpt-4o-mini</td>
+            <td>0.67</td>
+            <td>0.67</td>
+            <td>0.67</td>
+            <td>73.33</td>
+        </tr>
+        
+        <tr>
+            <td>small_gpt-4o</td>
+            <td>0.56</td>
+            <td>0.83</td>
+            <td>0.67</td>
+            <td>429.87</td>
+        </tr>
+        
+        <tr>
+            <td>large_gpt-4o-mini</td>
+            <td>0.0</td>
+            <td>0.0</td>
+            <td>0.0</td>
+            <td>73.33</td>
+        </tr>
+        
+        <tr>
+            <td>large_gpt-4o</td>
+            <td>0.62</td>
+            <td>0.83</td>
+            <td>0.71</td>
+            <td>429.87</td>
+        </tr>
+        
+    </table>
+</div>
+<div class="section">
+    <h2>Processed Transcription Metrics</h2>
+    <table>
+        <tr>
+            <th>Model</th>
+            <th>Average WER after Ad Removal</th>
+        </tr>
+        
+        <tr>
+            <td>tiny_gpt-4o-mini</td>
+            <td>0.18</td>
+        </tr>
+        
+        <tr>
+            <td>tiny_gpt-4o</td>
+            <td>0.18</td>
+        </tr>
+        
+        <tr>
+            <td>small_gpt-4o-mini</td>
+            <td>0.14</td>
+        </tr>
+        
+        <tr>
+            <td>small_gpt-4o</td>
+            <td>0.14</td>
+        </tr>
+        
+        <tr>
+            <td>large_gpt-4o-mini</td>
+            <td>0.13</td>
+        </tr>
+        
+        <tr>
+            <td>large_gpt-4o</td>
+            <td>0.13</td>
+        </tr>
+        
+    </table>
+</div>
+<div class="section">
+    <h2>Advertisement Detections per Audio File</h2>
+    
+    <h3>GRC978.mp3</h3>
+    <ul class="ad-detection">
+        
+        <li>
+            <strong>Ad Text:</strong> My Leo photos. This is I think they're first time on security now now. Well, because it's security now, I want to tell you a little bit of a myelia photos. It's a photo storage, actually document storage, photos, videos, and documents. That backs up everything you've got, puts it on every device you have. But most importantly for you, our secure nail listeners, is absolutely secure. It does not use the cloud if you don't want it to. And if you do, it's up to you. It encrypts it. Steve calls it pre-egress encryption. Well, we'll go up three internet, Grison. For the purposes of this, many of us rely on our clouds, right? For digital data, they many apps and services, but they're just not protecting our data as we should. It's one of the reasons, one of many reasons, I am a Milio Photos Plus user. I have, according to this, too, this is Milio, 211,274 images in 211,000,000, and it does it bogged down, and it does it bogged down. No, it is a place to store them. It's automatically doing face recognition. I say, which, who, everybody is at first, you know, that's my wife, that's my kids and so forth. And then it goes through all the rest of the images, matches them beautifully. I also tell it a few things about location, but then it finds, it says pictures of churches, pictures of churches, near an ocean, pictures of fish, pictures of fish coming out of the river. It's amazing. It is the best photo categorization tool ever. My Leo Photos Plus gives you a single consolidated library for photos, videos, and other files on your Mac, on your PC, on your Android, on your iPhone, everywhere. And I have it everywhere. It's smart too. You could say I just want thumbnails on this one. I want originals on the one with the biggest drive. And of course when you download the from the thumbnail, You can download the original at any time. You could do some editing in there. It makes it effortless to curate, to protect, to organize, and sync your files from anywhere. Even social media pulls in from Instagram, from Facebook. I got all my photos off of Google. I did Google take out on my Google photos. Myleo photos plus automatically imported, and then, de-dupt it. You may say, well, turn it 11,000 photos, Leo. You must have duplicates. No, not one. because my Leo is the best D-Doping. And the best part of it is the file stay on my local devices, not on distant servers. Now, there is a myleo photos for Synology, so I actually do have myleo photos copying to my NAS for backup, but you don't have to. In fact, myleo photos even support your existing folder structure, but it does make it much easier to search, curate, and organize your media across all devices. It's a privacy first, storage solution that keeps your data local, easy to access, but also ensures you never lose a file. They do have cloud backups, it will work with Google Drive or Microsoft's cloud, or your network attached storage, but they're entirely optional. And before it ever goes up to the internet, my layout photos plus automatically encrypts your data, so that no one can see it but you. Even the platforms powerful AI capabilities, all that categorization, entirely on device. You're not getting data-minded. And you know, there are companies now who are saying, oh yeah, by the way, if you use our cloud, we own your photos, that'll be not my only, because you're not using their cloud. Your photos are your photos. You could tag, you could search for photos, using face recognition, amazing object recognition, dogs, cats, but also shannowsers. You can really narrow it down. You can use metadata like date and location. And none of it is shared unless you want it to be. You've got to love this. It is the most amazing app. So here's my photos. I could prove 211,000. I can look at my local sync policy. So wherever I want optimized quality or original quality, I can also, and I love this, send it to my family history. They support family search. This is a free service. It supports the LDS library. So you can easily get stuff up there. It supports all the photo formats. It does location. In fact, I can even pull up a map if we're all my photos have been taken. 49, 46,000 photos have GPS out of the 211,000. And I can pop jump right to that location. That I can just go on and on. This is the best tool ever. Not just photos, it does OCR on documents. It takes videos too. Most important for you, the Security and Aliciner's privacy first. Get it today. Myleo photos plus to help you get started. We've got a great offer. Your first month is free. It's $99 for your first year of myleo photos plus. By the way, I immediately subscribed. Because I thought this is too great, but we've got a special deal right now. Your first month is free at mwhlo.com slash-twit. I've heard me talk about this, I suspect I can go on and on. This has this is one of the deepest pieces of software I've ever used and it gets better. Day by day, they add new features. There's no way I could tell you everything you can do and want to add. Check it out. It is amazing. Milio photos at myleo.com slash to it. I don't know how to recommend it more entirely and wholeheartedly. It is amazing. It's where I store everything now.<br>
+            <strong>Time:</strong> 387.64s - 727.0s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Delete me with everything we talk about on this show. It seems pretty clear that privacy is important to you. I'm not blowing smoke when I say that. But all you have to do is go out and Google your name, search see it in F for your name, and you'll see how little privacy you actually have. And that's probably because of data brokers. The sad thing about data brokers is we still have yet to have a federal law making it illegal, which means it's completely legal for companies, including your ISP and for company to do business with, every site you visit, to share your personal data with these data brokers. And then these data brokers can completely legally sell it on to anybody who has the money, including foreign governments, our own government, and attackers, bad guys. know this happened, it happened to us. Our CEO, you know, Lisa, repeatedly sent out text messages to all her director reports saying, hey, I'm in a meeting right now. I need you to buy some Amazon gift cards for me and send them along to this address because you don't want to give them to all the staff for holidays or whatever. Fortunately, her director reports are smart and didn't fall for it, but it was completely fake. And the thing that was an eye My opener was whoever these bad guys were, they knew who Lisa was, they knew who her direct reports were, they knew her phone number, they knew their phone number. I mean the information they needed to make this scam and it was all available online through data brokers. We immediately signed up for Delete Me and I believe you should sign up for Delete Me. There is only really one good way to stop this and that's for you to go out and delete all this data from data brokers. Each data broker has a form. You can fill out the law requires it, saying, take me off your database. But there are hundreds of data brokers do you know who they all are? And worse, as soon as you delete it, then they start repopulating it. Oh, that's you? Oh, we didn't know. We just started building an OCA and somebody else. It turned out to be you again. Well, there you go. This is a problem for everybody, including everybody in your family. Delete me now has family plans. Now I should say that as the adult, you're the one who has to have to delete me account. A minor can't have it. But as the adult, as the administrator of your family plan, you can make sure everyone in your family is safe online. Reducing risk from identity theft, from cybersecurity threats, like I just described fishing, scams, harassment, and more. Delete me's experts will find and remove your data from hundreds of data brokers. each member of your family can have a data sheet tailored to them. So you can easily control what it is that, you know, this being deleted, what they should be looking for as the account owner you managed the privacy settings for the whole family. And then as I said, delete me will not only delete it initially, but they'll continue to scan and remove your information regularly. I'm talking to everything. Address is phone numbers, emails, photos, relatives, social media accounts, property value. Protect yourself. Reclaim your privacy. Visit joindeleteme.com slash Twitter. The offer code we have for you is Twitter, TWIT, that will save you 20% off all privacy plans. Including that family plan. That's joindeleteme.com slash Twitter. Don't forget the offer code. TWIT for 20% off. This is something we did immediately because it was just obvious. We had a problem. If you're a business, you should have delete me for all your managers, it's like vital to your security. Join deleteme.com slash Twitter the offer code, TWIT gets you 20% off.<br>
+            <strong>Time:</strong> 2153.8s - 2394.36s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> With one big things services, it's the number one big thing. At onebigthink.com, with one big thing services, you're guided by an experienced executive who becomes your data protection officer. He's got all the capacity and all the capabilities of a true DPO. That's an enterprise security leadership role, responsible for overseeing data protection, strategy compliance and implementation to make sure that your company's compliant with GDPR, CCPA, CPRA, and so forth. The role of the DPO includes expert knowledge of data protection law. You're gonna see why it's so hard to find this person, by the way. You've got to know expert knowledge of data protection laws and practices. You've got to have broad and deep information, privacy, compliance, and data processing skills sets across industries. A complete understanding of IT infrastructures, technologies, technical and organizational structures, all in the industry, your industry. And of course, you've got to have excellent management skills as well as the ability to interface easily within turnle staff at all levels. I've just written the perfect job listing for your DPO. Well, guess what? That's what one big thing will do for you. That you don't have to hire that person. You've got one big thing. One big thing's AI compliance services designed to integrate with your organization's privacy program, and provide the required governance compliance and assessment activities under all these new regulations. They'll even help you train your team, raise awareness, and train staff on AI regulatory requirements and issues. This is a role you need to fill. This is a role that's hard to fill until you go to onebigthink.com. To learn more about how to give your organization sustainable privacy and AI compliance. It's not optional anymore. Let's face it. You've got to go to onebigthink.com. That's the number one BIGTHI-NK. Onebigthink.com. They're there ready and willing to help you. So you could focus on your core mission and not have to worry about regulatory compliance.<br>
+            <strong>Time:</strong> 4790.7s - 4917.82s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Collide works with companies that use octa for our user authentication. collide adds that extra step, the hardware and software authentication. Make sure that your known users are entering with known secure devices. And maybe you heard me tell you that collide was purchased by one password. Kind of a, you know, a happy surprise. It's big news, both companies really focus on leading the industry and creating security solutions that put users first. In areas, passwords versus authentication, but you know, that's kind of related aren't they? For over a year, collide device trust is help companies with octane sure that only known and secured devices can access their data. They're still doing that. They're just doing it with one password. It's actually a match made in a real synergy. If you've got octane and you've been thinking, ah, I really don't know, check out collide and you water. This is the best time possible. There's no better time. And by the way, very easy to get up and running with Collider. If heard people say, oh, is this going to be complicated? No, collide comes that they complete library of pre-built device posture checks. All the stuff you know you want. You know, operating system up to date browsers up to date. That kind of thing. And then it's very easy to write your own custom checks for stuff that's specific to your situation. Pretty much anything you can think of. And here's a nice feature. You can use Collider devices without MDM, which means your entire Linux fleet It means contractor devices and every single one of those BYOD devices, the phones and the laptops and your company. Now the collide is part of one password. It's just gonna get better. So just to reassure you, this is great news. Check it out at collide.com slash security now to learn more and watch the demo today. That's KOLIDE.com slash security now.<br>
+            <strong>Time:</strong> 6623.8s - 6742.72s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Let me hurry up here and tell you about our first sponsor of the show today Wonderful company. I've been using for some time My Leo photos. This is I think they're first time on security now now Well, because it's security now, I want to tell you a little bit of a myelia photos. It's a photo storage, actually document storage, photos, videos, and documents. That backs up everything you've got, puts it on every device you have. But most importantly for you, our secure nail listeners, is absolutely secure. It does not use the cloud if you don't want it to. And if you do, it's up to you. It encrypts it. Steve calls it pre-egress encryption. Well, we'll go up three internet, Grison. For the purposes of this, many of us rely on our clouds, right? For digital data, they many apps and services, but they're just not protecting our data as we should. It's one of the reasons, one of many reasons, I am a Milio Photos Plus user. I have, according to this, too, this is Milio, 211,274 images in 211,000,000, and it does it bogged down, and it does it bogged down. No, it is a place to store them. It's automatically doing face recognition. I say, which, who, everybody is at first, you know, that's my wife, that's my kids and so forth. And then it goes through all the rest of the images, matches them beautifully. I also tell it a few things about location, but then it finds, it says pictures of churches, pictures of churches, near an ocean, pictures of fish, pictures of fish coming out of the river. It's amazing. It is the best photo categorization tool ever. My Leo Photos Plus gives you a single consolidated library for photos, videos, and other files on your Mac, on your PC, on your Android, on your iPhone, everywhere. And I have it everywhere. It's smart too. You could say I just want thumbnails on this one. I want originals on the one with the biggest drive. And of course when you download the from the thumbnail, You can download the original at any time. You could do some editing in there. It makes it effortless to curate, to protect, to organize, and sync your files from anywhere. Even social media pulls in from Instagram, from Facebook. I got all my photos off of Google. I did Google take out on my Google photos. Myleo photos plus automatically imported, and then, de-dupt it. You may say, well, turn it 11,000 photos, Leo. You must have duplicates. No, not one. because myleo is the best D-Doping. And the best part of it is the file stay on my local devices, not on distant servers. Now, there is a myleo photos for Synology, so I actually do have myleo photos copying to my NAS for backup, but you don't have to. In fact, myleo photos even support your existing folder structure, but it does make it much easier to search, curate, and organize your media across all devices. It's a privacy first, storage solution that keeps your data local, easy to access, but also ensures you never lose a file. They do have cloud backups, it will work with Google Drive or Microsoft's cloud, or your network attached storage, but they're entirely optional. And before it ever goes up to the internet, my layout photos plus automatically encrypts your data, so that no one can see it but you. Even the platforms powerful AI capabilities, all that categorization, entirely on device. You're not getting data-minded. And you know, there are companies now who are saying, oh yeah, by the way, if you use our cloud, we own your photos, that'll be not my only, because you're not using their cloud. Your photos are your photos. You could tag, you could search for photos, using face recognition, amazing object recognition, dogs, cats, but also shannowsers. You can really narrow it down. You can use metadata like date and location. And none of it is shared unless you want it to be. You've got to love this. It is the most amazing app. So here's my photos. I could prove 211,000. I can look at my local sync policy. So wherever I want optimized quality or original quality, I can also, and I love this, send it to my family history. They support family search. This is a free service. It supports the LDS library. So you can easily get stuff up there. It supports all the photo formats. It does location. In fact, I can even pull up a map if we're all my photos have been taken. 49, 46,000 photos have GPS out of the 211,000. And I can pop jump right to that location. That I can just go on and on. This is the best tool ever. Not just photos, it does OCR on documents. It takes videos too. Most important for you, the Security and Aliciner's privacy first. Get it today. Myleo photos plus to help you get started. We've got a great offer. Your first month is free. It's $99 for your first year of myleo photos plus. By the way, I immediately subscribed. Because I thought this is too great, but we've got a special deal right now. Your first month is free at mwhlo.com slash-twit. I've heard me talk about this, I suspect I can go on and on. This has this is one of the deepest pieces of software I've ever used and it gets better. Day by day, they add new features. There's no way I could tell you everything you can do and want to add. Check it out. It is amazing. Milio photos at myleo.com slash to it. I don't know how to recommend it more entirely and wholeheartedly. It is amazing. It's where I store everything now.<br>
+            <strong>Time:</strong> 382.2s - 728.72s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Security now is brought to you by. Delete me with everything we talk about on this show. It seems pretty clear that privacy is important to you. I'm not blowing smoke when I say that. But all you have to do is go out and Google your name, search see it in F for your name, and you'll see how little privacy you actually have. And that's probably because of data brokers. The sad thing about data brokers is we still have yet to have a federal law making it illegal, which means it's completely legal for companies, including your ISP and for company to do business with, every site you visit, to share your personal data with these data brokers. And then these data brokers can completely legally sell it on to anybody who has the money, including foreign governments, our own government, and attackers, bad guys. know this happened, it happened to us. Our CEO, you know, Lisa, repeatedly sent out text messages to all her director reports saying, hey, I'm in a meeting right now. I need you to buy some Amazon gift cards for me and send them along to this address because you don't want to give them to all the staff for holidays or whatever. Fortunately, her director reports are smart and didn't fall for it, but it was completely fake. And the thing that was an eye My opener was whoever these bad guys were, they knew who Lisa was, they knew who her direct reports were, they knew her phone number, they knew their phone number. I mean the information they needed to make this scam and it was all available online through data brokers. We immediately signed up for Delete Me and I believe you should sign up for Delete Me. There is only really one good way to stop this and that's for you to go out and delete all this data from data brokers. Each data broker has a form. You can fill out the law requires it, saying, take me off your database. But there are hundreds of data brokers do you know who they all are? And worse, as soon as you delete it, then they start repopulating it. Oh, that's you? Oh, we didn't know. We just started building an OCA and somebody else. It turned out to be you again. Well, there you go. This is a problem for everybody, including everybody in your family. Delete me now has family plans. Now I should say that as the adult, you're the one who has to have to delete me account. A minor can't have it. But as the adult, as the administrator of your family plan, you can make sure everyone in your family is safe online. Reducing risk from identity theft, from cybersecurity threats, like I just described fishing, scams, harassment, and more. Delete me's experts will find and remove your data from hundreds of data brokers. each member of your family can have a data sheet tailored to them. So you can easily control what it is that, you know, this being deleted, what they should be looking for as the account owner you managed the privacy settings for the whole family. And then as I said, delete me will not only delete it initially, but they'll continue to scan and remove your information regularly. I'm talking to everything. Address is phone numbers, emails, photos, relatives, social media accounts, property value. Protect yourself. Reclaim your privacy. Visit joindeleteme.com slash Twitter. The offer code we have for you is Twitter, TWIT, that will save you 20% off all privacy plans. Including that family plan. That's joindeleteme.com slash Twitter. Don't forget the offer code. TWIT for 20% off. This is something we did immediately because it was just obvious. We had a problem. If you're a business, you should have delete me for all your managers, it's like vital to your security. Join deleteme.com slash Twitter the offer code, TWIT gets you 20% off.<br>
+            <strong>Time:</strong> 2150.24s - 2391.88s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Security now is brought to you by. One big, thank big. The world's changed. I think if you listen to the show, you kind of understand privacy. And AI compliance both are here to stay, the regulations governing all of this are in constant flux everywhere in the world. new regulations emerging daily. Organizations are forced to embrace concepts like privacy by design, transparency, purpose limitation, data minimization, data subject rights. This is all well and good. These are good things. But most mid-sized high growth organizations, just don't have the time they need to focus on their job, on their core offerings, they need to have the time and the volume of work to keep a full-time privacy and aid item busy. And even if they could, it's really hard to track the top talent. Your competing gets Microsoft and Facebook and Google. That's where one big thing comes in. With one big things services, it's the number one big thing. At onebigthink.com, with one big thing services, you're guided by an experienced executive who becomes your data protection officer. He's got all the capacity and all the capabilities of a true DPO. That's an enterprise security leadership role, responsible for overseeing data protection, strategy compliance and implementation to make sure that your company's compliant with GDPR, CCPA, CPRA, and so forth. The role of the DPO includes expert knowledge of data protection law. You're gonna see why it's so hard to find this person, by the way. You've got to know expert knowledge of data protection laws and practices. You've got to have broad and deep information, privacy, compliance, and data processing skills sets across industries. A complete understanding of IT infrastructures, technologies, technical and organizational structures, all in the industry, your industry. And of course, you've got to have excellent management skills as well as the ability to interface easily within turnle staff at all levels. I've just written the perfect job listing for your DPO. Oh, let's throw in some AI expertise as well, right? Well, guess what? That's what one big thing will do for you. That you don't have to hire that person. You've got one big thing. One big thing's AI compliance services designed to integrate with your organization's privacy, program, and provide the required governance compliance and assessment activities under all these new regulations. They'll even help you train your team, raise awareness.<br>
+            <strong>Time:</strong> 4714.5s - 4887.14s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> until you go to onebigthink.com. To learn more about how to give your organization sustainable privacy and AI compliance. It's not optional anymore. Let's face it. You've got to go to onebigthink.com. That's the number one BIGTHI-NK. Onebigthink.com. They're there ready and willing to help you. So you could focus on your core mission and not have to worry about regulatory compliance. One big thing. Dot com, some ideas, time has come.<br>
+            <strong>Time:</strong> 4894.98s - 4925.26s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> The name John is trying to recall is hover.com. They are my absolute hands-down favorite domain name registrar. They were also a Twitter sponsor, though that followed my switching to them from away from network solutions who was GRC's original registrar with whom I registered the GRC.com domain back in December of 1991, which was a few months after the domain Microsoft.com was first registered. I could not be more pleased and happy and happy to recommend hover as the place for anyone to hang their domain.<br>
+            <strong>Time:</strong> 5556.18s - 5603.3s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> The first is portion of the show brought to you by collide. I've talked about collide with you before. You know that is the company that puts users first that gets users to be part of your security team. collide works with companies that use octa for our user authentication. It adds that extra step, the hardware and software authentication. Make sure that your known users are entering with known secure devices. And maybe you heard me tell you that collide was purchased by one password. Kind of a, you know, a happy surprise. It's big news, both companies really focus on leading the industry and creating security solutions that put users first. in areas, passwords versus authentication, but you know, that's kind of related aren't they? For over a year, collide device trust is help companies with octane sure that only known and secured devices can access their data. They're still doing that. They're just doing it with one password. It's actually a match made in a real synergy. If you've got octane and you've been thinking, ah, I really don't know, check out collide and you water. This is the best time possible. There's no better time. And by the way, very easy to get up and running with Collider. If heard people say, oh, is this going to be complicated? No, collide comes that they complete library of pre-built device posture checks. All the stuff you know you want. You know, operating system up to date browsers up to date. That kind of thing. And then it's very easy to write your own custom checks for stuff that's specific to your situation. Pretty much anything you can think of. And here's a nice feature. You can use Collider devices without MDM, which means your entire Linux fleet It means contractor devices and every single one of those BYOD devices, the phones and the laptops and your company. Now the collide is part of one password. It's just gonna get better. So just to reassure you, this is great news. Check it out at collide.com slash security now to learn more and watch the demo today. That's KOLIDE.com slash security now.<br>
+            <strong>Time:</strong> 6600.44s - 6742.72s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Milio Photos Plus to help you get started. Your first month is free at mylio.com slash tweet.<br>
+            <strong>Time:</strong> 387.7s - 681.22s<br>
+            <strong>Detected by:</strong> small_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Delete Me with everything we talk about on this show. Join DeleteMe.com slash tweet for 20% off.<br>
+            <strong>Time:</strong> 2153.78s - 2378.5s<br>
+            <strong>Detected by:</strong> small_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Collide.com slash security now to learn more and watch the demo today.<br>
+            <strong>Time:</strong> 6621.5s - 6747.28s<br>
+            <strong>Detected by:</strong> small_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> One Big Think.com for sustainable privacy and AI compliance.<br>
+            <strong>Time:</strong> 4792.46s - 4919.58s<br>
+            <strong>Detected by:</strong> small_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> wonderful company I've been using for some time, Milio Photos. This is, I think their first time on security now. Now, because it's security now, I want to tell you a little bit about Milio Photos. It's a photo storage, actually document storage, photos, videos, and documents that backs up. Everything you've got puts it on every device you have. But most importantly for you, our secure now listeners is absolutely secure. It does not use the cloud if you don't want it to. And if you do, It's up to you. It encrypts it. Steve calls it pre-egress encryption. We'll call it pre-internet encryption for the purposes of this. Many of us rely on our clouds, right, for digital day-to-day, many apps and services, but they're just not protecting our data as we should. It's one of the reasons, one of many reasons I am a Milio Photos Plus user. I have, according to this, this is Milio, 211,274 images. And 211, and does it bog down? No, it is a place to store them. It's automatically doing face recognition, I say, which everybody is at first, you know, that's my wife, that's my kids and so forth. And then it goes through all the rest of the images, matches them beautifully. I also tell it a few things about location, but then it finds, it says pictures of churches, pictures of churches near an ocean, pictures of fish, pictures of fish coming out of the river. It's amazing. It is the best photo categorization tool ever. MyLeo Photos Plus gives you a single consolidated library for photos, videos, and other files on your Mac, on your PC, on your Android, on your iPhone, everywhere. And I have it everywhere. It's smart too, you could say. I just want thumbnails on this one. I want originals on the one with the biggest drive. And of course, when you download the, from the thumbnail, you can download the original at any time, you could do some editing in there. It makes it effortless to curate, to protect, to organize and sync your files from anywhere. Even social media pulls in from Instagram, from Facebook. I got all my photos off of Google. I did Google takeout on my Google photos. Milio Photos Plus automatically imported it and then dedupted it. You may say, well, 211,000 photos, Leo, you must have duplicates. No, not one, because Myleo has the best de-duping. And the best part of it is the files stay on my local devices, not on distant servers. Now, there is a Myleo photos for Synology, so I actually do have Myleo photos copying to my NAS for backup, but you don't have to. In fact, Myleo photos even supports your existing folder structure, but it does make it much easier to search, curate, and organize your media across all devices. is a privacy-first storage solution that keeps your data local, easy to access, but also ensures you never lose a file. They do have cloud backups. It will work with Google Drive or Microsoft's cloud or your network attached storage, but they're entirely optional. And before it ever goes up to the internet, MyLeo Photos Plus automatically encrypts your data so that no one can see it but you. Even the platform's powerful AI capabilities, that categorization entirely on device. You're not getting data mined and you know if there are companies now who are saying oh yeah by the way if you use our cloud we own your photos. Not Milio because you're not using their cloud. Your photos are your photos. You could tag, you could search for photos using face recognition, amazing object recognition, dogs, cats, but also schnauzers. It really narrows it down. You can use metadata like date and location and none of it is shared unless you want it to be. You've got to love this. It is the most amazing app. So here's my photos. I could prove 211,000. I can look at my local sync policy. So wherever I want optimized quality or original quality, I can also, and I love this, send it to my family history. They support FamilySearch. This is a free service. It supports the LDS library so you can easily get stuff up there. It supports all the photo formats. It does location. In fact, I can even pull up a map of where all my photos have been taken. 49, 46,000 photos have GPS out of the 211,000. And I can pop jump right to that location that I can just go on and on. This is the best tool ever. Not just photos. It does OCR on documents. It takes videos too. Most important for you, the security now listeners, it's privacy first. Get it today. MyLeo Photos Plus to help you get started. We've got a great offer. Your first month is free. It's $99 for your first year of MyLeo Photos Plus. By the way, I immediately subscribed because I thought this is too great, but we've got a special deal right now. Your first month is free at mylio.com slash tweet. You've heard me talk about this. I suspect I can go on and on. This has, this is one of the deepest pieces of software I've ever used and it gets better day by day. They add new features. There's no way I could tell you everything you can do in one ad. Check it out. It is amazing. Milio Photos at milio.com slash twit. I don't know how to recommend it more entirely and wholeheartedly. It is amazing. It's where I store everything now.<br>
+            <strong>Time:</strong> 387.7s - 728.7s<br>
+            <strong>Detected by:</strong> small_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Security Now is brought to you by, delete me with everything we talk about on this show. It seems pretty clear that privacy is important to you, right? I'm not blowing smoke when I say that. But all you have to do is go out and Google your name, search the internet for your name, and you'll see how little privacy you actually have. And that's probably because of data brokers. The sad thing about data brokers is we still have yet to have a federal law making it illegal, which means it's completely legal for companies, including your ISP, every company you do business with every site you visit to share your personal data with these data brokers. And then these data brokers can completely legally sell it on to anybody who has the money, including foreign governments, our own government and attackers, bad guys. You know, I know this happened. It happened to us. Our CEO, Lisa, reputedly sent out text messages to all her direct reports saying, hey, I'm in a meeting right now. I need you to buy some Amazon gift cards for me and send them along to this address because you know, we want to give them to all the staff for holidays or whatever. Fortunately, her direct reports are smart and didn't fall for it, but it was completely fake. And the thing that was an eye-opener was whoever these bad guys were, they knew who Lisa was. They knew her, her direct reports were, they knew her phone number, they knew their phone number. I mean, the information they needed to make this scam, and it was all available online through data brokers. We immediately signed up for DeleteMe, and I believe you should sign up for DeleteMe. There is only really one good way to stop this, and that's for you to go out and delete all this data from data brokers. Each data broker has a form. You can fill out the law requires it saying take me off your database. But there are hundreds of data brokers. Do you know who they all are? And worse, as soon as you delete it, then they start repopulating it. Oh, that's you? Oh, we didn't know. We just started building an SAA and somebody else. It turned out to be you again. Well, there you go. This is a problem for everybody, including everybody in your family. Delete me now has family plans. Now, I should say that as the adult, you're the one who has to have the delete me account. A minor can't have it. But as the adult, as the administrator of your family plan, you can make sure everyone in your family is safe online, reducing risk from identity theft, from cyber security threats, like I just described, fishing, scams, harassment, and more. Delete Me's experts will find and remove your data from hundreds of data brokers. Each member of your family can have a data sheet tailored to them so you can easily control what it is that is being deleted, what they should be looking for as the account owner. You manage the privacy settings for the whole family. And then as I said, DeleteMe will not only delete it initially, but they'll continue to scan and remove your information regularly. I'm talking everything. Addresses, phone numbers, emails, photos, relatives, social media accounts, property value. Protect yourself, reclaim your privacy, visit joindeleteme.com slash tweet. Offer code we have for you is TWIT TWIT that will save you 20% off all privacy plans including that family plan. That's joindeleteami.com slash TWIT. Don't forget the offer code TWIT for 20% off. This is something we did immediately because it was just obvious we had a problem. If you're a business you should have to delete me for all your managers. It's like vital to your security. Join theleapme.com slash tweet the offer code TWIT gets you 20% off.<br>
+            <strong>Time:</strong> 2150.34s - 2390.82s<br>
+            <strong>Detected by:</strong> small_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> One big thing, big. The world's changed. I think if you listen to the show, you kind of understand privacy and AI compliance, both are here to stay. The regulations governing all of this are in constant flux everywhere in the world. New regulations emerging daily. Companies are forced to embrace concepts like privacy by design, transparency, purpose limitation, data minimization, data subject rights. This is all well and good. These are good things. But most mid-sized high growth organizations just don't have the time. They need to focus on their job, on their core offerings. They neither have the time nor the volume of work to keep a full-time privacy and AI team busy. And even if they could, it's really hard to attract the top talent. You're competing against Microsoft at Facebook and Google. That's where One Big Think comes in. With One Big Think services, it's the number one big think at OneBigThink.com. With One Big Think services, you're guided by an experienced executive who becomes your data protection officer. He's got all the capacity and all the capabilities of a true DPO. That's an enterprise security leadership role, responsible for overseeing data protection, strategy compliance, and implementation to make sure that your company's compliant with GDPR, CCPA, CPRA, and so forth. The role of the DPO includes expert knowledge of data protection law. You're gonna see why it's so hard to find this person, by the way. You've gotta know expert knowledge of data protection laws and practices. You've got to have broad and deep information, privacy, compliance, and data processing skillsets across industries, a complete understanding of IT infrastructures, technologies, technical and organizational structures, all in the industry, your industry. And then of course you've got to have excellent management skills, as well as the ability to interface easily with internal staff at all levels. I've just written the perfect job listing for your DPO. Oh, let's throw in some AI expertise as well, right? Well, guess what? That's what One Big Think will do for you. That you don't have to hire that person. You've got One Big Think. One Big Think's AI compliance service is designed to integrate with your organization's privacy program and provide the required governance, compliance, and assessment activities under all these new regulations. They'll even help you train your team, raise awareness, and train staff on AI regulatory requirements and issues. This is a role you need to fill. This is a role that's hard to fill until you go to onebigthink.com. To learn more about how to give your organization sustainable privacy and AI compliance, it's not optional anymore. Let's face it, you've gotta go to onebigthink.com. That's the number one, B-I-G-T-H-I-N-K. Onebigthink.com. They're there ready and willing to help you so you can focus on your core mission and not have to worry about regulatory compliance. One big think.com.<br>
+            <strong>Time:</strong> 4717.54s - 4919.58s<br>
+            <strong>Detected by:</strong> small_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Now, of course, DR the nerd, that would be David Reddicop, whom I first met when they were an early advertiser on this podcast, I think right from the get go, Leo, with the Canada based nerds on site guys at the time. And of course, as we know, David is now part of the team at Adam Networks. And I discussed their work during episode 946. And noted that they have some very interesting and very mature perimeter security technology, which definitely worth looking at.<br>
+            <strong>Time:</strong> 5490.74s - 5526.86s<br>
+            <strong>Detected by:</strong> small_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> The name John is trying to recall is hover.com. They are my absolute hands down favorite domain name registrar. They were also a Twits sponsor, though that followed my switching to them away from network solutions who is GRC's original registrar, with whom I registered the GRC.com domain back in December of 1991, which was a few months after the domain Microsoft.com was first registered. I could not be more pleased and happy and happy to recommend Hover as the place for anyone to hang their domain.<br>
+            <strong>Time:</strong> 5562.42s - 5593.18s<br>
+            <strong>Detected by:</strong> small_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> And now that its support for mobile devices is shipping, it's on all platforms everywhere. A listener using his initials BE surprised me. He wrote, Hi Steve, thank you for the new email system since I don't use any social media regarding code signing HSMs.<br>
+            <strong>Time:</strong> 6143.68s - 6151.8s<br>
+            <strong>Detected by:</strong> small_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Let's take it now. Yes. I said one less. Yes. I kind of meant one left. One left. Yes. And a good one. We'll deal with that. And then, oh, baby, wait till you hear what happened. I am very interested. But first, this portion of the show brought to you by Collide. I've talked about Collide with you before. You know that is the company that puts users first, that gets users to be part of your security team. Collide works with companies that use Okta for user authentication. It adds that extra step, the hardware and software authentication to make sure that your known users are entering with known secure devices. And maybe you heard Let me tell you that Collide was purchased by one password. Kind of a, you know, a happy surprise. It's big news. Both companies really focus on leading the industry and creating security solutions that put users first. Different areas, passwords versus authentication, but you know, that's kind of related, aren't they? For over a year, Collide Device Trust has helped companies with OCTO ensure that only known and secured devices can access their data. They're still doing that. they're just doing it with one password. It's actually a match made in heaven, a real synergy. If you've got octa and you've been thinking, ah, I'm really gonna check out Collide and Uota, this is the best time possible. There's no better time. And by the way, very easy to get up and running with Collide. I've heard people say, oh, is this gonna be complicated? No, Collide comes with a complete library of pre-built device posture checks, all the stuff you know you want, you know, operating system up to date, browsers up to date, that kind of thing. And then it's very easy to write your own custom checks for stuff that's specific to your situation. Pretty much anything you can think of. And here's a nice feature. You can use collided devices without MDM, which means your entire Linux fleet. It means contractor devices and every single one of those BYOD devices, the phones and the laptops in your company. Now the collide is part of one password, it's just gonna get better. So just to reassure you, this is great news. Check it out at collide.com slash security now to learn more and watch the demo today. That's kolide.com slash security now.<br>
+            <strong>Time:</strong> 6600.7s - 6743.28s<br>
+            <strong>Detected by:</strong> small_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Mileyo Photos. This is, I think, their first time on security now. Now, because it's security now, I want to tell you a little bit about Mileyo Photos. It's a photo storage, actually document storage, photos, videos, and documents that backs up everything you've got, puts it on every device you have. But most importantly for you, our SecureNow listeners, is absolutely secure. It does not use the cloud if you don't want it to. And if you do, and it's up to you it encrypts it steve calls it pre-egress encryption well we'll call it pre-internet encryption for the purposes of this.<br>
+            <strong>Time:</strong> 388.08s - 393.72s<br>
+            <strong>Detected by:</strong> large_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Delete Me. With everything we talk about on this show, it seems pretty clear that privacy is important to you, right? But all you have to do is go out and Google your name, search the Internet for your name, and you'll see how little privacy you actually have. And that's probably because of data brokers. The sad thing about data brokers is we still have yet to have a federal law making it illegal, which means it's completely legal for companies, including your ISP, every company you do business with, every site you visit, to share your personal data with these data brokers.<br>
+            <strong>Time:</strong> 2154.94s - 2214.16s<br>
+            <strong>Detected by:</strong> large_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> One Big Think. The world's changed. Privacy and AI compliance, both are here to stay. The regulations governing all of this are in constant flux everywhere in the world. New regulations emerging daily. Organizations are forced to embrace concepts like privacy by design, transparency, purpose limitation, data minimization, data subject rights. This is all well and good. These are good things. But most mid-sized high growth organizations just don't have the time.<br>
+            <strong>Time:</strong> 661.14s - 674.78s<br>
+            <strong>Detected by:</strong> large_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Collide. I've talked about Collide with you before. You know that as the company that puts users first, that gets users to be part of your security team. Collide works with companies that use Okta for our user authentication. It adds that extra step, the hardware and software authentication to make sure that your known users are entering with known secure devices.<br>
+            <strong>Time:</strong> 6621.14s - 6690.5s<br>
+            <strong>Detected by:</strong> large_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Mileyo Photos. This is, I think, their first time on security now. Now, because it's security now, I want to tell you a little bit about Mileyo Photos. It's a photo storage, actually document storage, photos, videos, and documents that backs up everything you've got, puts it on every device you have. But most importantly for you, our SecureNow listeners, is absolutely secure. It does not use the cloud if you don't want it to. And if you do, and it's up to you it encrypts it steve calls it pre-egress encryption well we'll call it pre-internet encryption for the purposes of this uh many of us rely on our clouds right for digital day-to-day many apps and services but they're just not protecting our data as we should it's one of the reasons one of many reasons i am a mileo photos plus user i have according to this two this is my Leo, 211,274 images and 211,000. And it does it bog down? No, it is a place to store them. It's automatically doing face recognition. I say, which who everybody is at first, you know, that's my wife, that's my kids and so forth. And then it goes through all the rest of the images, matches them beautifully. I, uh, I also tell it, uh, a few things about location, but then it finds, it says pictures of churches, pictures of churches near an ocean, pictures of fish, pictures of fish coming out of the river. It's amazing. It is the best photo categorization tool ever. Miley of Photos Plus gives you a single consolidated library for photos, videos, and other files on your Mac, on your PC, on your Android, on your iPhone, everywhere. And I have it everywhere. It's smart, too. You could say, I just want thumbnails on this one. I want originals on the one with the biggest drive. And, of course, when you download from the thumbnail, you could download the original at any time. You could do some editing in there. It makes it effortless to curate, to protect, to organize and sync your files from anywhere. Even social media pulls in from Instagram, from Facebook. I got all my photos off of Google. I did Google takeout on my Google Photos. MyLeo Photos Plus automatically imported it and then deduped it. You may say, well, 211,000 photos, Leo, you must have duplicates. No, not one, because MyLeo has the best deduping. And the best part of it is the files stay on my local devices, not on distant servers. Now, there is a MyLeo Photos for Synology, so I actually do have MyLeo Photos copying to my NAS for backup. But you don't have to. In fact, Miley Photos even supports your existing folder structure, but it does make it much easier to search, curate, and organize your media across all devices. It's a privacy-first storage solution that keeps your data local, easy to access, but also ensures you never lose a file. They do have cloud backups. It will work with Google Drive or Microsoft's cloud or your network-attached storage, but they're entirely optional. and before it ever goes up to the internet, Miley of Photos Plus automatically encrypts your data so that no one can see it but you. Even the platform's powerful AI capabilities, all that categorization, entirely on device. You're not getting data mined. And you know, there are companies now who are saying, oh yeah, by the way, if you use our cloud, we own your photos, Adobe. Not Miley, because you're not using their cloud. Your photos are your photos. You could tag, you could search for photos using face recognition, amazing object recognition, dogs, cats, but also schnauzers. You can, it really narrows it down. You can use metadata like date and location, and none of it is shared unless you want it to be. You've got to love this. It is the most amazing app. So here's my photos. I can prove 211,000. I can look at my local sync policy. so wherever I want optimized quality or original quality I can also and I love this send it to my family history they support family search this is a free service it supports the LDS library so you can easily get stuff up there it supports all the photo formats it does location in fact I can even pull up a map of where all my photos have been taken 49 46,000 photos have GPS out of the 211,000, and I can pop jump right to that location. I can just go on and on. This is the best tool ever. Not just photos. It does OCR on documents. It takes videos too. Most important for you, the Security Now listeners, it's privacy first. Get it today. Miley O'Photos Plus to help you get started. We've got a great offer. Your first month is free. It's $99 for your first year of Miley O'Photos Plus. By the way, I immediately subscribed because I thought this is too great. But we've got a special deal right now. Your first month is free at myleo.com slash twit. You've heard me talk about this. I suspect I can go on and on. This is one of the deepest pieces of software I've ever used, and it gets better day by day. They add new features. There's no way I could tell you everything you can do in one ad. Check it out. It is amazing. Myleo photos at myleo.com slash twit. I don't know how to recommend it more entirely and wholeheartedly. It is amazing. It's where I store everything now.<br>
+            <strong>Time:</strong> 388.08s - 728.7s<br>
+            <strong>Detected by:</strong> large_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Security Now is brought to you by Delete Me. With everything we talk about on this show, it seems pretty clear that privacy is important to you, right? I'm not blowing smoke when I say that. But all you have to do is go out and Google your name, search the Internet for your name, and you'll see how little privacy you actually have. And that's probably because of data brokers. The sad thing about data brokers is we still have yet to have a federal law making it illegal, which means it's completely legal for companies, including your ISP, every company you do business with, every site you visit, to share your personal data with these data brokers. And then these data brokers can completely legally sell it on to anybody who has the money, including foreign governments, our own government, and attackers, bad guys. You know, I know this happened. It happened to us. our CEO, you know, Lisa reputedly sent out text messages to all her direct reports saying, hey, I'm in a meeting right now. I need you to buy some Amazon gift cards for me and send them along to this address because, you know, we want to give them to all the staff for holidays or whatever. Fortunately, her direct reports are smart and didn't fall for it, but it was completely fake. And the thing that was an eye opener was whoever these bad guys were, They knew who Lisa was. They knew who her direct reports were. They knew her phone number. They knew their phone number. I mean, the information they needed to make this scam, and it was all available online through data brokers. We immediately signed up for Delete Me, and I believe you should sign up for Delete Me. There is only really one good way to stop this, and that's for you to go out and delete all this data from data brokers. Each data broker has a form you can fill out. The law requires it saying, take me off your database. But there are hundreds of data brokers. Do you know who they all are? And worse, as soon as you delete it, then they start repopulating it. Oh, that's you? Oh, we didn't know. We just started building an OCA on somebody else. It turned out to be you again. Well, there you go. This is a problem for everybody, including everybody in your family. DeleteMe now has family plans. Now, I should say that as the adult, you're the one who has to have the Delete Me account. A minor can't have it. But as the adult, as the administrator of your family plan, you can make sure everyone in your family is safe online, reducing risk from identity theft, from cybersecurity threats like I just described, phishing, scams, harassment, and more. Delete Me's experts will find and remove your data from hundreds of data brokers. Each member of your family can have a data sheet tailored to them. So you can easily control what it is that is being deleted, what they should be looking for. As the account owner, you manage the privacy settings for the whole family. And then, as I said, Delete Me will not only delete it initially, but they'll continue to scan and remove your information regularly. I'm talking everything. addresses phone numbers emails photos relatives social media accounts property value protect yourself reclaim your privacy visit join delete me dot com slash twit the offer code we have for you is twit t-w-i-t that will save you 20 off all privacy plans including that family plan That's joindelete.com slash twit. Don't forget the offer code TWIT for 20% off. This is something we did immediately because it was just obvious we had a problem. If you're a business, you should have delete me for all your managers. It's like vital to your security. joindelete.com slash twit, the offer code TWIT gets you 20% off.<br>
+            <strong>Time:</strong> 2150.32s - 2391.66s<br>
+            <strong>Detected by:</strong> large_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> One Big Think. The world's changed. I think if you listen to the show, you kind of understand. Privacy and AI compliance, both are here to stay. The regulations governing all of this are in constant flux everywhere in the world. New regulations emerging daily. Organizations are forced to embrace concepts like privacy by design, transparency, purpose limitation, data minimization, data subject rights. This is all well and good. These are good things. But most mid-sized high growth organizations just don't have the time. They need to focus on their job, on their core offerings. They neither have the time nor the volume of work to keep a full-time privacy and AI team busy. And even if they could, it's really hard to attract the top talent. You're competing against Microsoft and Facebook and Google. That's where One Big Think comes in. With One Big Think's services, it's the number one big think at onebigthink.com. With One Big Think's services, you're guided by an experienced executive who becomes your data protection officer. He's got all the capacity and all the capabilities of a true DPO. That's an enterprise security leadership role responsible for overseeing data protection, strategy compliance, and implementation to make sure that your company's compliant with GDPR, CCPA, CPRA, and so forth. The role of the DPO includes expert knowledge of data protection law. You're going to see why it's so hard to find this person, by the way. You've got to know expert knowledge of data protection laws and practices. You've got to have broad and deep information, privacy, compliance, and data processing skill sets across industries. A complete understanding of IT infrastructures, technologies, technical, and organizational structures, all in the industry, your industry. And then, of course, you've got to have excellent management skills, as well as the ability to interface easily with internal staff at all levels. I've just written the perfect job listing for your DPO. Oh, let's throw in some AI expertise as well, right? Well, guess what? That's what One Big Think will do for you. You don't have to hire that person. You've got One Big Think. One Big Think's AI compliance service is designed to integrate with your organization's privacy program and provide the required governance, compliance, and assessment activities under all these new regulations. They'll even help you train your team, raise awareness, and train staff on AI regulatory requirements and issues. This is a role you need to fill. This is a role that's hard to fill until you go to OneBigThink.com. To learn more about how to give your organization sustainable privacy and AI compliance, it's not optional anymore. Let's face it. You've got to go to OneBigThink.com. That's the number one, B-I-G-T-H-I-N-K. one big think.com they're there ready and willing to help you so you can focus on your core mission and not have to worry about regulatory compliance one big think.com some ideas time has come<br>
+            <strong>Time:</strong> 4713.38s - 4917.26s<br>
+            <strong>Detected by:</strong> large_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> I could not be more pleased and happy to recommend Hover as the place for anyone to hang their domain.<br>
+            <strong>Time:</strong> 5593.88s - 5602.36s<br>
+            <strong>Detected by:</strong> large_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> a cross-platform password manager, such as Bitwarden, a sponsor of the Twit Network, and use that hardware dongle to, in turn, unlock Bitwarden if you want more than Bitwarden's biometric unlocking.<br>
+            <strong>Time:</strong> 6116.58s - 6126.2s<br>
+            <strong>Detected by:</strong> large_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> But first, this portion of the show brought to you by Collide. I've talked about Collide with you before. You know that as the company that puts users first, that gets users to be part of your security team. Collide works with companies that use Okta for our user authentication. It adds that extra step, the hardware and software authentication to make sure that your known users are entering with known secure devices. And maybe you heard me tell you that Collide was purchased by 1Password. Kind of a, you know, a happy surprise. It's big news. Both companies really focus on leading the industry and creating security solutions that put users first. Different areas, passwords versus authentication, but, you know, that's kind of related, aren't they? For over a year, Collide Device Trust has helped companies with Okta to ensure that only known and secured devices can access their data. They're still doing that. They're just doing it with one password. It's actually a match made in heaven, a real synergy. If you've got Okta and you've been thinking, I really ought to check out Collide and you ought to, this is the best time possible. There's no better time. And by the way, very easy to get up and running with Collide. I've heard people say, oh, is this going to be complicated? No. Collide comes with a complete library of pre-built device posture checks, all the stuff you know you want, you know, operating system up to date, browsers up to date, that kind of thing. And then it's very easy to write your own custom checks for stuff that's specific to your situation. Pretty much anything you can think of. And here's a nice feature. You can use Collide in devices without MDM, which means your entire Linux fleet. It means contractor devices and every single one of those BYOD devices, the phones and the laptops in your company. Now that Collide is part of 1Password, it's just going to get better. So just to reassure you, this is great news. Check it out at collide.com slash security now to learn more and watch the demo today. That's K-O-L-I-D-E dot com slash security now.<br>
+            <strong>Time:</strong> 6621.14s - 6742.52s<br>
+            <strong>Detected by:</strong> large_gpt-4o
+        </li>
+        
+    </ul>
+    
+    <h3>NYT.mp3</h3>
+    <ul class="ad-detection">
+        
+        <li>
+            <strong>Ad Text:</strong> Listen to, this is not a beauty podcast, now on your favorite podcast platform, brought to you by L'Oréal Group.<br>
+            <strong>Time:</strong> 20.0s - 29.0s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> If you are curious about the world on which we live, if you're interested in who you are, where you come from and how you relate to others, I would encourage you to subscribe after the New York Times.<br>
+            <strong>Time:</strong> 1462.0s - 1463.0s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> brought to you by L'Oréal Group.<br>
+            <strong>Time:</strong> 26.0s - 29.0s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> My name is Audrey Diaz Burge and I am a national correspondent covering race and identity for the New York Times. Race coverage is complicated, it can be joyous and affirming, it can be uncomfortable, but I feel like it's still absolutely necessary. Race and identity are not just understanding who you are, but who the person in front of you is, and wanting to understand more about them. We're trying to wrestle down these really hard subjects, and maybe not answering the question, but asking the right questions. And listening, listening. Listening a lot, the Times is dedicated to ambitious and deeply reported coverage of recent identity and their willing to back it up with resources. If you are curious about the world on which we live, if you're interested in who you are, where you come from and how you relate to others, I would encourage you to subscribe after the New York Times.<br>
+            <strong>Time:</strong> 1404.64s - 1463.76s<br>
+            <strong>Detected by:</strong> tiny_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Listen to This is Not a Beauty podcast now on your favorite podcast platform, brought to you by L'Oréal Group.<br>
+            <strong>Time:</strong> 19.8s - 28.4s<br>
+            <strong>Detected by:</strong> small_gpt-4o-mini, small_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> If you are curious about the world on which we live, if you're interested in who you are, where you come from, and how you relate to others, I would encourage you to subscribe to The New York Times.<br>
+            <strong>Time:</strong> 1454.6s - 1463.6s<br>
+            <strong>Detected by:</strong> small_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> My name is Audra D. S. Birch and I am a national correspondent covering race and identity for the New York Times. Race coverage is complicated. It can be joyous and affirming. It can be uncomfortable, but I feel like it's still absolutely necessary. Race and identity are not just understanding who you are, but who the person in front of you is and wanting to understand more about them. We're trying to wrestle down these really hard subjects and maybe not answering the question but asking the right questions and listening, listening, listening a lot. The Times is dedicated to ambitious and deeply reported coverage of race and identity and they're willing to back it up with resources. If you are curious about the world on which we live, if you're interested in who you are, where you come from, and how you relate to others, I would encourage you to subscribe to The New York Times.<br>
+            <strong>Time:</strong> 1396.2s - 1463.6s<br>
+            <strong>Detected by:</strong> small_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Listen to This Is Not A Beauty podcast now on your favorite podcast platform.<br>
+            <strong>Time:</strong> 19.88s - 25.8s<br>
+            <strong>Detected by:</strong> large_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> Brought to you by L'Oréal Group.<br>
+            <strong>Time:</strong> 26.4s - 28.32s<br>
+            <strong>Detected by:</strong> large_gpt-4o-mini, large_gpt-4o
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> If you are curious about the world in which we live, if you're interested in who you are, where you come from, and how you relate to others, I would encourage you to subscribe to The New York Times.<br>
+            <strong>Time:</strong> 1459.78s - 1463.24s<br>
+            <strong>Detected by:</strong> large_gpt-4o-mini
+        </li>
+        
+        <li>
+            <strong>Ad Text:</strong> My name is Audra D.S. Birch, and I am a national correspondent covering race and identity for The New York Times. Race coverage is complicated. It can be joyous and affirming. It can be uncomfortable, but I feel like it's still absolutely necessary. Race and identity are not just understanding who you are, but who the person in front of you is. And wanting to understand more about them. We're trying to wrestle down these really hard subjects and maybe not answering the question, but asking the right questions. and listening, listening, listening a lot. The Times is dedicated to ambitious and deeply reported coverage of race and identity, and they're willing to back it up with resources. If you are curious about the world in which we live, if you're interested in who you are, where you come from, and how you relate to others, I would encourage you to subscribe to The New York Times.<br>
+            <strong>Time:</strong> 1404.04s - 1463.24s<br>
+            <strong>Detected by:</strong> large_gpt-4o
+        </li>
+        
+    </ul>
+    
+</div>
+</body>
+</html>

@@ -114,7 +114,7 @@ def detect_ads(model_name: str, transcription_segments: List[Dict]) -> List[Dict
     prompt_template_tokens = len(encoding.encode(prompt_template))
 
     # Calculate maximum available tokens for the prompt (including the chunk)
-    max_available_tokens_for_prompt = context_window - max_response_tokens
+    max_available_tokens_for_prompt = int((context_window - max_response_tokens - prompt_template_tokens) * 0.9) # 10% buffer
     logger.info(f"Max available tokens for prompt (including chunk): {max_available_tokens_for_prompt} for model '{model_name}'.")
 
     # Calculate max_chunk_tokens
@@ -221,6 +221,7 @@ def detect_ads(model_name: str, transcription_segments: List[Dict]) -> List[Dict
             # Validate and clean the ads
             chunk_ads = validate_ads(chunk_ads)
             logger.info(f"Detected {len(chunk_ads)} ads in chunk {chunk_index} using model '{model_name}'.")
+            logger.info(f"Chunk {chunk_index} ads: {chunk_ads} model: {model_name}")
 
             # Associate ads with the model
             for ad in chunk_ads:
