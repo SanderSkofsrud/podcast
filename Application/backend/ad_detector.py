@@ -77,7 +77,7 @@ def detect_ad_segments(transcription):
             logger.error(f"JSON decode error: {jde}. Response was: {content}")
 
             time.sleep(retry_delay)
-        except openai.error.RateLimitError as e:
+        except openai.RateLimitError as e:
             logger.warning(f"Rate limit exceeded. Retrying in {retry_delay} seconds...")
             time.sleep(retry_delay)
             retry_delay *= 2
