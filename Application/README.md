@@ -1,4 +1,4 @@
-# How to run the pipeline
+# How to run the application
 
 This is the web-application for the project. It lets the user select a file from their computer and have its ads be removed. 
 
