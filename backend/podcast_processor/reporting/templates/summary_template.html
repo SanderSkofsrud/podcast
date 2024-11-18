@@ -7,18 +7,14 @@
     <title>Model Evaluation Summary - {{ run_dir }}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { text-align: center; }
+        h1 { text-align: left; }
         .section { margin-bottom: 40px; }
         .section img { max-width: 100%; height: auto; }
-        .transcription-link { margin-right: 10px; }
+        .transcript-link { margin-right: 10px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }
         th { background-color: #f2f2f2; }
         .ad-highlight { background-color: yellow; }
-
-        h1 {
-            text-align: left;
-        }
 
         ul {
             list-style-type: none;
@@ -27,7 +23,6 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
-
         }
 
         .transcript ul {
@@ -56,11 +51,17 @@
             border-radius: 10px;
         }
 
-
         .transcript li {
             padding: 10px;
-
             border-bottom: 1px solid #dddddd;
+        }
+
+        .ad-detection ul li {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 5px;
         }
 
         li {
@@ -93,9 +94,6 @@
         li a:active {
             color: #333;
         }
-
-
-
     </style>
 </head>
 <body>
@@ -110,11 +108,19 @@
         <li><img src="processed_transcription_wer.png" alt="Processed Transcription WER"></li>
     </ul>
 </div>
+<div class="section">
+    <h2>Price-Based Analysis</h2>
+    <p>The following plots illustrate the relationship between the cost of each LLM model and its performance metrics:</p>
+    <ul>
+        <li><img src="price_vs_ad_detection_accuracy.png" alt="Price vs. Ad Detection Accuracy"></li>
+        <li><img src="price_vs_time_usage.png" alt="Price vs. Time Usage"></li>
+    </ul>
+</div>
 <div class="transcript">
     <h2>Transcription Differences</h2>
     <p>Click on a model to view the transcription differences and full transcripts with advertisements highlighted for each audio file:</p>
     <ul class="transcript-mini">
-        {% for model in aggregated['model'] %}
+        {% for model in model_combinations %}
         <li>
             <strong>{{ model }}</strong>
             <ul>
@@ -137,6 +143,7 @@
             <th>Precision</th>
             <th>Recall</th>
             <th>F1 Score</th>
+            <th>Processing Time (s)</th>
         </tr>
         {% for model, metrics in ad_detection_metrics.items() %}
         <tr>
@@ -144,6 +151,7 @@
             <td>{{ metrics['precision']|round(2) }}</td>
             <td>{{ metrics['recall']|round(2) }}</td>
             <td>{{ metrics['f1_score']|round(2) }}</td>
+            <td>{{ metrics['processing_time']|round(2) }}</td>
         </tr>
         {% endfor %}
     </table>
@@ -162,6 +170,21 @@
         </tr>
         {% endfor %}
     </table>
+</div>
+<div class="section">
+    <h2>Advertisement Detections per Audio File</h2>
+    {% for audio_file, ads in aggregated_ad_detections.items() %}
+    <h3>{{ audio_file }}</h3>
+    <ul class="ad-detection">
+        {% for ad in ads %}
+        <li>
+            <strong>Ad Text:</strong> {{ ad.text }}<br>
+            <strong>Time:</strong> {{ ad.start }}s - {{ ad.end }}s<br>
+            <strong>Detected by:</strong> {{ ad.models | join(', ') }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
 </div>
 </body>
 </html>
