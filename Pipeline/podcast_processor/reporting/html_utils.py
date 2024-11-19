@@ -42,7 +42,7 @@ def get_diff_html(reference: str, hypothesis: str) -> str:
                 html_output.append('<span class="insert">' + ' '.join(hyp_tokens[j1:j2]) + '</span>')
             elif tag == 'delete':
                 html_output.append('<span class="delete">' + ' '.join(ref_tokens[i1:i2]) + '</span>')
-            html_output.append(' ')  # Add space between words
+            html_output.append(' ')  
 
         html_output.append("</p>")
 

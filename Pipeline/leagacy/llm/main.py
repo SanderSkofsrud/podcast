@@ -17,13 +17,10 @@ def main():
     # Load data
     data = load_evaluation_data()
 
-    # Evaluate models in parallel
     results = {}
     all_models = LLAMA_MODELS + GPT_MODELS
 
-    # Use ThreadPoolExecutor to parallelize model evaluations
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        # Submit each model evaluation as a separate thread
         future_to_model = {executor.submit(evaluate_model, model_name, data): model_name for model_name in all_models}
 
         for future in concurrent.futures.as_completed(future_to_model):

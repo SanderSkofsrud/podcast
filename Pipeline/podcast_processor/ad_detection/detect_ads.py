@@ -79,13 +79,12 @@ def detect_ads(model_name: str, transcription_segments: List[Dict]) -> List[Dict
 
     # Fetch model configurations
     model_config = LLM_MODEL_CONFIGS.get(model_name, {})
-    context_window = model_config.get("context_window", 32_768)  # Corrected value
-    max_tokens_per_minute = model_config.get("max_tokens_per_minute", 30_000)  # Default remains if unspecified
+    context_window = model_config.get("context_window", 32_768) 
+    max_tokens_per_minute = model_config.get("max_tokens_per_minute", 30_000)  
 
     # Define max_output_length based on model's capabilities
     max_output_length = model_config.get("max_output_length", 4096)
-    max_response_tokens = max_output_length  # Maximum tokens the response can have
-
+    max_response_tokens = max_output_length  
     # Initialize encoding for the model
     try:
         encoding = tiktoken.encoding_for_model(model_name)
@@ -130,7 +129,7 @@ def detect_ads(model_name: str, transcription_segments: List[Dict]) -> List[Dict
     current_chunk = []
     current_tokens = 0
     for line in transcription_lines:
-        line_tokens = len(encoding.encode(line + '\n'))  # Include newline
+        line_tokens = len(encoding.encode(line + '\n'))  
         if current_tokens + line_tokens > max_chunk_tokens:
             if current_chunk:
                 chunks.append('\n'.join(current_chunk))
@@ -253,8 +252,8 @@ def detect_ads_for_model(llm_model_name: str, run_dir: str):
         Tuple[Dict[str, Dict[str, List[Dict]]], float]: Detected ads per whisper_model, and total processing time.
     """
     results = {}  # Dict[str, Dict[str, List[Dict]]], maps whisper_model to audio files and their detected ads
-    total_processing_time = 0.0  # Initialize total processing time
-    transcription_base_dir = TRANSCRIPTIONS_DIR  # This is the 'data/transcriptions' directory
+    total_processing_time = 0.0  
+    transcription_base_dir = TRANSCRIPTIONS_DIR  
 
     # Iterate over active Whisper models
     for whisper_model in WHISPER_MODELS:

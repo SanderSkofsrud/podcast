@@ -45,7 +45,7 @@ def process_audio():
         status_dict[unique_id] = "Detecting advertisement segments"
         ad_segments = detect_ad_segments(transcription)
         logger.info(f"Identified {len(ad_segments)} advertisement segments.")
-        logger.debug(f"Advertisement segments: {ad_segments}")  # Optional detailed log
+        logger.debug(f"Advertisement segments: {ad_segments}")  
 
         status_dict[unique_id] = "Removing advertisement segments"
         edited_audio_filename = remove_ad_segments(audio_filename, ad_segments)
@@ -62,7 +62,7 @@ def process_audio():
                 if os.path.exists(edited_audio_filename):
                     os.remove(edited_audio_filename)
                     logger.info(f"Removed temporary file {edited_audio_filename}.")
-                del status_dict[unique_id]  # Clean up status entry
+                del status_dict[unique_id]  
             except Exception as e:
                 logger.error(f"Error removing temporary files: {e}")
             return response

@@ -61,8 +61,8 @@ class TokenBucket:
         while True:
             if self.consume(tokens):
                 return
-            sleep_time = 60 / self.refill_rate  # Wait for the next refill
-            if sleep_time > 0.05:  # Only log if sleep_time is significant
+            sleep_time = 60 / self.refill_rate  
+            if sleep_time > 0.05:  
                 logger.info(f"Waiting for {sleep_time:.2f} seconds to refill tokens.")
             time.sleep(sleep_time)
 

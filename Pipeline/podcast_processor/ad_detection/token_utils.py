@@ -24,5 +24,5 @@ def num_tokens_from_messages(messages, model_name):
             num_tokens += len(encoding.encode(value))
             if key == "name":
                 num_tokens += tokens_per_name
-    num_tokens += 1  # The assistant's reply is primed with <|start|>assistant<|message|>
+    num_tokens += 1  
     return num_tokens
