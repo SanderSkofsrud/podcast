@@ -5,6 +5,7 @@ This is a pipeline used to test the different Whisper and OpenAI api models.
 To run the pipline, do the following commands:
 
 ``````
+docker-compose build
 docker-compose up podcast_processor
 ``````
 
