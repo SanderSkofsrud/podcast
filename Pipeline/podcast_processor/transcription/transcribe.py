@@ -136,7 +136,7 @@ def transcribe_all_models(run_dir: str) -> Dict[str, Dict[str, List[float]]]:
         return {}
 
     # Adjust pool size based on available resources
-    pool_size = torch.cuda.device_count() or cpu_count()
+    pool_size = torch.cuda.device_count() or (cpu_count() / 2)
     logger.info(f"Starting transcription with {pool_size} parallel processes on '{DEVICE}'.")
 
     # List all audio files once
