@@ -1,10 +1,10 @@
 # Podcast AdBlocker – IDATT2502
 
 Created by:
-- Elias Trana
-- Erik Nordsæther
-- Sander Rom Skofsrud
-- Vegard Johnsen
+- Elias Trana, elias.t.trana@ntnu.no
+- Erik Nordsæther, eriktn@stud.ntnu.no
+- Sander Rom Skofsrud, sander.r.skofsrud@ntnu.no
+- Vegard Johnsen, vegard.johnsen@ntnu.no
 
 ### Application
 Podcast AdBlocker is a simple Python script that removes ads from podcasts.
@@ -28,6 +28,9 @@ Then, decide what you want to do:
 - If you want to use the program, read the README.md file in the `Application` directory.
 - If you want to test the pipeline, read the README.md file in the `Pipeline` directory.
 
+### Important:
+
+If you want to run the program, you will need an OPENAI API key. If you do not have one yourself, please contact one of the developers to borrow one for testing purposes.
 
 
 
