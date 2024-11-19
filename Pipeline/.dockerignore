@@ -2,8 +2,8 @@ __pycache__
 *.pyc
 *.pyo
 *.pyd
-.env
 .git
 .gitignore
 Dockerfile
-docker-compose.yml
+compose.yml
+.env

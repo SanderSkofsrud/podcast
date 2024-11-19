@@ -19,15 +19,12 @@ RUN curl -sSL https://install.python-poetry.org | python3 - && \
 # Set work directory
 WORKDIR /app
 
-# Copy poetry files
-COPY poetry.lock pyproject.toml /app/
+# Copy the entire project first to ensure all local dependencies are available
+COPY . /app
 
 # Install dependencies
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
-
-# Copy the entire project
-COPY . /app
 
 # Set the default command to bash (can be overridden by docker-compose)
 CMD ["bash"]

@@ -20,7 +20,7 @@ and constructs a detailed HTML page with graphs, statistics and interactive resu
 To install Podcast AdBlocker, start by cloning the repository:
 
 ```bash
-git clone
+git clone https://github.com/SanderSkofsrud/podcast.git
 ```
 
 Then, decide what you want to do:
