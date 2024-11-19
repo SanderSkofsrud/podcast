@@ -1,0 +1,31 @@
+<!-- podcast_processor/reporting/templates/diff_template.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Transcription Comparison - {{ model_name }} - {{ audio_file }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { font-size: 20px; margin-bottom: 10px; }
+        .transcription { font-size: 16px; }
+        .replace { background-color: #ff9999; } /* Substitutions */
+        .insert { background-color: #ffcc99; }  /* Insertions */
+        .delete { background-color: #99ccff; }  /* Deletions */
+        .legend { margin-top: 20px; }
+        .legend span { display: inline-block; width: 20px; height: 20px; margin-right: 5px; }
+    </style>
+</head>
+<body>
+<div class="header">Model: {{ model_name }} | Audio File: {{ audio_file }}</div>
+<div class="transcription">
+    {{ diff_html | safe }}
+</div>
+<div class="legend">
+    <h3>Legend:</h3>
+    <p><span class="replace"></span> Substitution</p>
+    <p><span class="insert"></span> Insertion</p>
+    <p><span class="delete"></span> Deletion</p>
+</div>
+</body>
+</html>

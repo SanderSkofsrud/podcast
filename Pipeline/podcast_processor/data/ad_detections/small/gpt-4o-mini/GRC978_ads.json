@@ -1,0 +1,34 @@
+[
+    {
+        "text": "Milio Photos Plus to help you get started. Your first month is free at myleo.com slash tweet.",
+        "start": 387.7,
+        "end": 683.14,
+        "models": [
+            "gpt-4o-mini"
+        ]
+    },
+    {
+        "text": "Delete Me with everything we talk about on this show. Protect yourself, reclaim your privacy, visit joindeleteme.com slash tweet.",
+        "start": 2153.78,
+        "end": 2378.5,
+        "models": [
+            "gpt-4o-mini"
+        ]
+    },
+    {
+        "text": "Collide.com slash security now to learn more and watch the demo today.",
+        "start": 6621.5,
+        "end": 6747.28,
+        "models": [
+            "gpt-4o-mini"
+        ]
+    },
+    {
+        "text": "One Big Think.com for sustainable privacy and AI compliance.",
+        "start": 4792.46,
+        "end": 4919.58,
+        "models": [
+            "gpt-4o-mini"
+        ]
+    }
+]

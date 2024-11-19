@@ -1,0 +1,26 @@
+[
+    {
+        "text": "Listen to This Is Not A Beauty podcast now on your favorite podcast platform.",
+        "start": 19.88,
+        "end": 25.8,
+        "models": [
+            "gpt-4o-mini"
+        ]
+    },
+    {
+        "text": "Brought to you by L'Or\u00e9al Group.",
+        "start": 26.4,
+        "end": 28.32,
+        "models": [
+            "gpt-4o-mini"
+        ]
+    },
+    {
+        "text": "I would encourage you to subscribe to The New York Times.",
+        "start": 1459.78,
+        "end": 1463.24,
+        "models": [
+            "gpt-4o-mini"
+        ]
+    }
+]

@@ -1,0 +1,79 @@
+<!-- podcast_processor/reporting/templates/full_transcript_template.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Full Transcript - {{ model_name }} - {{ audio_file }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            font-size: 22px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .transcript {
+            font-size: 16px;
+        }
+        .ad-highlight-ground-truth {
+            background-color: #ffcccc; /* Light red for ground truth ads */
+        }
+        .ad-highlight-detected {
+            background-color: #ccffcc; /* Light green for detected ads */
+        }
+        .ad-highlight-both {
+            background-color: #ccccff; /* Light blue for overlapping ads */
+        }
+        .ad-tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .ad-tooltip .ad-info {
+            visibility: hidden;
+            width: max-content;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the text */
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .ad-tooltip:hover .ad-info {
+            visibility: visible;
+            opacity: 1;
+        }
+        .legend {
+            margin-top: 20px;
+        }
+        .legend span {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">Model: {{ model_name }} | Audio File: {{ audio_file }}</div>
+<div class="transcript">
+    {{ transcript_html | safe }}
+</div>
+<div class="legend">
+    <h3>Legend:</h3>
+    <p><span class="ad-highlight-ground-truth"></span> Ground Truth Advertisement</p>
+    <p><span class="ad-highlight-detected"></span> Detected Advertisement</p>
+    <p><span class="ad-highlight-both"></span> Correctly Detected Advertisement</p>
+</div>
+</body>
+</html>
