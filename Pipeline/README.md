@@ -20,3 +20,5 @@ or
 ``````
 docker-compose up legacy_transcription
 ``````
+
+Note, that you need both an OPENAI_API_KEY and an LLAMA_API_KEY to run the legacy_llm. If you do not have one yourself, please contact one of the developers to borrow them for testing purposes.
